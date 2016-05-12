@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Youxi Core\n"
+"POT-Creation-Date: 2014-11-07 13:37+0700\n"
+"PO-Revision-Date: 2014-11-07 13:37+0700\n"
+"Last-Translator: \n"
+"Language-Team: YouxiThemes\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../admin/class-form.php:595
+msgid "General"
+msgstr ""
+
+#: ../admin/fields/class-image.php:29
+msgid "Choose Image(s)"
+msgstr ""
+
+#: ../admin/fields/class-image.php:30
+msgid "Insert Image(s)"
+msgstr ""
+
+#: ../admin/fields/class-repeater.php:36
+msgid "Add"
+msgstr ""
+
+#: ../admin/fields/class-repeater.php:37
+msgid "Edit"
+msgstr ""
+
+#: ../admin/fields/class-repeater.php:38
+msgid "Delete"
+msgstr ""
+
+#: ../admin/fields/class-repeater.php:40
+msgid "Are you sure you want to remove this item?"
+msgstr ""
+
+#: ../admin/fields/class-upload.php:24
+msgid "Choose File"
+msgstr ""
+
+#: ../admin/fields/class-upload.php:25
+msgid "Insert File"
+msgstr ""
+
+#: ../admin/fields/class-upload.php:26
+msgid "Select File"
+msgstr ""
+
+#: ../admin/fields/class-upload.php:27
+msgid "Remove File"
+msgstr ""
+
+#: ../class-admin-notice.php:84
+#, php-format
+msgid ""
+"Lost? Open a support thread at Youxi Themes <a href=\"%s\" target=\"_blank"
+"\">support forum</a>."
+msgstr ""
+
+#: ../class-post-order-page.php:44
+#, php-format
+msgid ""
+"Manage your %s ordering by using the drag and drop user interface below. "
+"Changes will be saved automatically and the order can be retrieved by "
+"querying posts by <strong>menu_order</strong>."
+msgstr ""
+
+#: ../class-post-order-page.php:102
+msgid "You're not allowed to do this action."
+msgstr ""
+
+#: ../class-post-type.php:249
+msgid "Featured Image"
+msgstr ""

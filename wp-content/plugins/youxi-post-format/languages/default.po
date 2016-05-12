@@ -1,0 +1,146 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Youxi Post Format\n"
+"POT-Creation-Date: 2014-11-07 13:38+0700\n"
+"PO-Revision-Date: 2014-11-07 13:38+0700\n"
+"Last-Translator: \n"
+"Language-Team: YouxiThemes\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../class-admin-notice.php:84
+#, php-format
+msgid ""
+"Lost? Open a support thread at Youxi Themes <a href=\"%s\" target=\"_blank"
+"\">support forum</a>."
+msgstr ""
+
+#: ../youxi-post-format.php:29
+msgid "This plugin requires you to install and activate the Youxi Core plugin."
+msgstr ""
+
+#: ../youxi-post-format.php:90
+msgid "Post Format: Link"
+msgstr ""
+
+#: ../youxi-post-format.php:94
+msgid "Link URL"
+msgstr ""
+
+#: ../youxi-post-format.php:95
+msgid "Enter here the link URL for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:107
+msgid "Post Format: Video"
+msgstr ""
+
+#: ../youxi-post-format.php:111 ../youxi-post-format.php:154
+msgid "Type"
+msgstr ""
+
+#: ../youxi-post-format.php:112
+msgid "Choose here the video type for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:114 ../youxi-post-format.php:157
+msgid "Embedded"
+msgstr ""
+
+#: ../youxi-post-format.php:115 ../youxi-post-format.php:158
+msgid "Hosted"
+msgstr ""
+
+#: ../youxi-post-format.php:121 ../youxi-post-format.php:164
+msgid "Embed Code"
+msgstr ""
+
+#: ../youxi-post-format.php:122
+msgid "Enter here the video embed code for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:128 ../youxi-post-format.php:171
+#: ../youxi-post-format.php:200
+msgid "Source"
+msgstr ""
+
+#: ../youxi-post-format.php:130
+msgid "Choose here the hosted video source for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:136
+msgid "Poster"
+msgstr ""
+
+#: ../youxi-post-format.php:137
+msgid ""
+"Upload here an image that will be used either as the poster or fallback for "
+"unsupported devices."
+msgstr ""
+
+#: ../youxi-post-format.php:150
+msgid "Post Format: Audio"
+msgstr ""
+
+#: ../youxi-post-format.php:155
+msgid "Choose here the audio type for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:165
+msgid "Enter here the audio embed code for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:173
+msgid "Choose here the hosted audio source for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:186
+msgid "Post Format: Quote"
+msgstr ""
+
+#: ../youxi-post-format.php:190
+msgid "Text"
+msgstr ""
+
+#: ../youxi-post-format.php:191
+msgid "Enter here the quote text."
+msgstr ""
+
+#: ../youxi-post-format.php:195
+msgid "Author"
+msgstr ""
+
+#: ../youxi-post-format.php:196
+msgid "Enter here the quote author for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:201
+msgid "Enter here the quote source for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:205
+msgid "Source URL"
+msgstr ""
+
+#: ../youxi-post-format.php:206
+msgid "Enter here the quote source URL for this post."
+msgstr ""
+
+#: ../youxi-post-format.php:219
+msgid "Post Format: Gallery"
+msgstr ""
+
+#: ../youxi-post-format.php:224
+msgid "Images"
+msgstr ""
+
+#: ../youxi-post-format.php:225
+msgid "Upload here the gallery images to use for this post."
+msgstr ""
