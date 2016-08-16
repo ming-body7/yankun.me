@@ -1,19 +1,13 @@
-<?php
+<?php if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Cheatin&#8217; uh?' );
+}
 
 /* ==========================================================================
-	Load Classes
+	Load Third Party Classes
 ============================================================================= */
 
-if( ! class_exists( 'Mobile_Detect' ) ) {
-	require( get_template_directory() . '/lib/vendor/class-mobile-detect.php' );
-}
-
 if( ! class_exists( 'TGM_Plugin_Activation' ) ) {
-	require( get_template_directory() . '/lib/vendor/class-tgm-plugin-activation.php' );
-}
-
-if( ! class_exists( 'Youxi_Google_Font' ) ) {
-	require( get_template_directory() . '/lib/framework/class-google-font.php' );
+	require_once( get_template_directory() . '/lib/vendor/class-tgm-plugin-activation.php' );
 }
 
 /* ==========================================================================
@@ -26,13 +20,6 @@ if( ! class_exists( 'Youxi_Google_Font' ) ) {
 if( ! isset( $content_width ) ) {
 	$content_width = 1140;
 }
-
-if( ! isset( $is_mobile ) ) {
-	$mb = new Mobile_Detect();
-	$is_mobile = $mb->isMobile();
-}
-
-show_admin_bar(0);
 
 /* ==========================================================================
 	Option Tree Setup
@@ -75,12 +62,12 @@ add_filter( 'ot_theme_mode', '__return_true' );
 /**
  * Required: include OptionTree.
  */
-require( get_template_directory() . '/option-tree/ot-loader.php' );
+require_once( get_template_directory() . '/option-tree/ot-loader.php' );
 
 /**
  * Include OptionTree Theme Options.
  */
-require( get_template_directory() . '/theme-options.php' );
+require_once( get_template_directory() . '/theme-options.php' );
 
 /* ==========================================================================
 	TGMPA Setup
@@ -104,42 +91,42 @@ function helium_tgmpa_register() {
 			'slug'     => 'youxi-builder', 
 			'source'   => get_template_directory() . '/plugins/youxi-builder.zip', 
 			'required' => false, 
-			'version'  => '2.2'
+			'version'  => '2.4.1'
 		), 
 		array(
 			'name'     => 'Youxi Core', 
 			'slug'     => 'youxi-core', 
 			'source'   => get_template_directory() . '/plugins/youxi-core.zip', 
 			'required' => true, 
-			'version'  => '1.3.2'
+			'version'  => '1.4.3'
 		), 
 		array(
 			'name'     => 'Youxi Portfolio', 
 			'slug'     => 'youxi-portfolio', 
 			'source'   => get_template_directory() . '/plugins/youxi-portfolio.zip', 
 			'required' => true, 
-			'version'  => '1.2'
+			'version'  => '1.3'
 		), 
 		array(
 			'name'     => 'Youxi Post Format', 
 			'slug'     => 'youxi-post-format', 
 			'source'   => get_template_directory() . '/plugins/youxi-post-format.zip', 
 			'required' => false, 
-			'version'  => '1.1'
+			'version'  => '1.2'
 		), 
 		array(
 			'name'     => 'Youxi Shortcode', 
 			'slug'     => 'youxi-shortcode', 
 			'source'   => get_template_directory() . '/plugins/youxi-shortcode.zip', 
 			'required' => false, 
-			'version'  => '3.1'
+			'version'  => '3.2'
 		), 
 		array(
 			'name'     => 'Youxi Widgets', 
 			'slug'     => 'youxi-widgets', 
 			'source'   => get_template_directory() . '/plugins/youxi-widgets.zip', 
 			'required' => false, 
-			'version'  => '1.2.4'
+			'version'  => '1.5.3'
 		), 
 		array(
 			'name'     => 'Contact Form 7',
@@ -168,47 +155,71 @@ function helium_tgmpa_register() {
 }
 
 /* ==========================================================================
+	Include Framework Classes
+============================================================================= */
+
+require_once( get_template_directory() . '/lib/framework/core/class-core.php' );
+
+require_once( get_template_directory() . '/lib/framework/font/class-font.php' );
+
+require_once( get_template_directory() . '/lib/importer/class-importer.php' );
+
+/* ==========================================================================
 	Include Plugin Configurations
 ============================================================================= */
 
-require( get_template_directory() . '/plugins-config/config-contact-form-7.php' );
+require_once( get_template_directory() . '/plugins-config/config-contact-form-7.php' );
 
-require( get_template_directory() . '/plugins-config/config-youxi-core.php' );
+require_once( get_template_directory() . '/plugins-config/config-youxi-core.php' );
 
-require( get_template_directory() . '/plugins-config/config-easy-digital-downloads.php' );
+require_once( get_template_directory() . '/plugins-config/config-easy-digital-downloads.php' );
 
-require( get_template_directory() . '/plugins-config/config-youxi-page-builder.php' );
+require_once( get_template_directory() . '/plugins-config/config-youxi-page-builder.php' );
 
-require( get_template_directory() . '/plugins-config/config-youxi-portfolio.php' );
+require_once( get_template_directory() . '/plugins-config/config-youxi-portfolio.php' );
 
-require( get_template_directory() . '/plugins-config/config-youxi-post-format.php' );
+require_once( get_template_directory() . '/plugins-config/config-youxi-post-format.php' );
 
-require( get_template_directory() . '/plugins-config/config-youxi-shortcodes.php' );
+require_once( get_template_directory() . '/plugins-config/config-youxi-shortcodes.php' );
 
-require( get_template_directory() . '/plugins-config/config-youxi-widgets.php' );
+require_once( get_template_directory() . '/plugins-config/config-youxi-widgets.php' );
 
 /* ==========================================================================
 	Include Theme Functions
 ============================================================================= */
 
-require( get_template_directory() . '/theme-includes/helium-addthis.php' );
+require_once( get_template_directory() . '/includes/helium-addthis.php' );
 
-require( get_template_directory() . '/theme-includes/helium-comments.php' );
+require_once( get_template_directory() . '/includes/helium-ajax.php' );
 
-require( get_template_directory() . '/theme-includes/helium-customizer.php' );
+require_once( get_template_directory() . '/includes/helium-comments.php' );
 
-require( get_template_directory() . '/theme-includes/helium-demo.php' );
+require_once( get_template_directory() . '/includes/helium-customizer.php' );
 
-require( get_template_directory() . '/theme-includes/helium-edd.php' );
+require_once( get_template_directory() . '/includes/helium-demo.php' );
 
-require( get_template_directory() . '/theme-includes/helium-functions.php' );
+require_once( get_template_directory() . '/includes/helium-edd.php' );
 
-require( get_template_directory() . '/theme-includes/helium-icons.php' );
+require_once( get_template_directory() . '/includes/helium-entries.php' );
 
-require( get_template_directory() . '/theme-includes/helium-portfolio.php' );
+require_once( get_template_directory() . '/includes/helium-filters.php' );
 
-require( get_template_directory() . '/theme-includes/helium-posts.php' );
+require_once( get_template_directory() . '/includes/helium-fonts.php' );
 
-require( get_template_directory() . '/theme-includes/helium-wp.php' );
+require_once( get_template_directory() . '/includes/helium-icons.php' );
+
+require_once( get_template_directory() . '/includes/helium-layout.php' );
+
+require_once( get_template_directory() . '/includes/helium-media.php' );
+
+require_once( get_template_directory() . '/includes/helium-nav-menu.php' );
+
+require_once( get_template_directory() . '/includes/helium-portfolio.php' );
+
+require_once( get_template_directory() . '/includes/helium-post.php' );
+
+require_once( get_template_directory() . '/includes/helium-theme-options.php' );
+
+require_once( get_template_directory() . '/includes/helium-wp.php' );
 
 /* EOF */

@@ -7,8 +7,47 @@ if( ! defined( 'YOUXI_PORTFOLIO_VERSION' ) ) {
 }
 
 /* ==========================================================================
+	Modify portfolio slug
+============================================================================= */
+
+if( ! function_exists( 'helium_modify_portfolio_slug' ) ):
+
+function helium_modify_portfolio_slug( $args ) {
+
+	$slug = trim( Youxi()->option->get( 'portfolio_slug' ) );
+
+	if( $slug && $slug != youxi_portfolio_cpt_name() ) {
+		$args['query_var'] = $slug;
+		$args['rewrite']   = compact( 'slug' );
+	}
+
+	return $args;
+}
+endif;
+add_filter( 'youxi_portfolio_cpt_args', 'helium_modify_portfolio_slug' );
+
+/* ==========================================================================
+	Add Comments Support
+============================================================================= */
+
+if( ! function_exists( 'helium_portfolio_supports' ) ):
+
+function helium_portfolio_supports( $args ) {
+
+	if( isset( $args['supports'] ) && is_array( $args['supports'] ) ) {
+		$args['supports'][] = 'comments';
+	}
+
+	return $args;
+}
+endif;
+add_filter( 'youxi_portfolio_cpt_args', 'helium_portfolio_supports' );
+
+/* ==========================================================================
 	Portfolio General
 ============================================================================= */
+
+if( ! function_exists( 'helium_modify_portfolio_tax' ) ):
 
 function helium_modify_portfolio_tax( $taxonomies ) {
 	if( isset( $taxonomies[ youxi_portfolio_tax_name() ] ) ) {
@@ -16,26 +55,8 @@ function helium_modify_portfolio_tax( $taxonomies ) {
 	}
 	return $taxonomies;
 }
+endif;
 add_filter( 'youxi_portfolio_cpt_taxonomies', 'helium_modify_portfolio_tax' );
-
-/**
- * Add the tinymce and page builder to one page blocks
- */
-if( ! function_exists( 'helium_portfolio_tinymce_post_types' ) ) {
-
-	function helium_portfolio_tinymce_post_types( $post_types ) {
-		
-		if( function_exists( 'youxi_portfolio_cpt_name' ) ) {
-			if( ! is_array( $post_types ) ) {
-				$post_types = array( $post_types );
-			}
-			$post_types[] = youxi_portfolio_cpt_name();
-		}
-		return $post_types;
-	}
-}
-// add_filter( 'youxi_builder_post_types', 'helium_portfolio_tinymce_post_types' );
-add_filter( 'youxi_shortcode_tinymce_post_types', 'helium_portfolio_tinymce_post_types' );
 
 /**
  * Portfolio Metaboxes
@@ -45,31 +66,31 @@ if( ! function_exists( 'helium_youxi_portfolio_cpt_metaboxes' ) ):
 	function helium_youxi_portfolio_cpt_metaboxes( $metaboxes ) {
 
 		$metaboxes['general'] = array(
-			'title' => __( 'General', 'helium' ), 
+			'title' => esc_html__( 'General', 'helium' ), 
 			'fields' => array(
 				'url' => array(
 					'type' => 'url', 
-					'label' => __( 'URL', 'helium' ), 
-					'description' => __( 'Enter here the portfolio URL.', 'helium' ), 
+					'label' => esc_html__( 'URL', 'helium' ), 
+					'description' => esc_html__( 'Enter here the portfolio URL.', 'helium' ), 
 					'show_admin_column' => true, 
 					'std' => ''
 				), 
 				'client' => array(
 					'type' => 'text', 
-					'label' => __( 'Client', 'helium' ), 
-					'description' => __( 'Enter here the portfolio client.', 'helium' ), 
+					'label' => esc_html__( 'Client', 'helium' ), 
+					'description' => esc_html__( 'Enter here the portfolio client.', 'helium' ), 
 					'std' => ''
 				), 
 				'client_url' => array(
 					'type' => 'text', 
-					'label' => __( 'Client URL', 'helium' ), 
-					'description' => __( 'Enter here the portfolio client url.', 'helium' ), 
+					'label' => esc_html__( 'Client URL', 'helium' ), 
+					'description' => esc_html__( 'Enter here the portfolio client url.', 'helium' ), 
 					'std' => ''
 				), 
 				'featured' => array(
 					'type' => 'switch', 
-					'label' => __( 'Featured', 'helium' ), 
-					'description' => __( 'Switch to mark the portfolio as featured and show it on the portfolio slider.', 'helium' ), 
+					'label' => esc_html__( 'Featured', 'helium' ), 
+					'description' => esc_html__( 'Switch to mark the portfolio as featured and show it on the portfolio slider.', 'helium' ), 
 					'std' => false, 
 					'scalar' => true
 				)
@@ -77,77 +98,83 @@ if( ! function_exists( 'helium_youxi_portfolio_cpt_metaboxes' ) ):
 		);
 
 		$metaboxes['layout'] = array(
-			'title' => __( 'Layout', 'helium' ), 
+			'title' => esc_html__( 'Layout', 'helium' ), 
 			'fields' => array(
+				'show_title' => array(
+					'type' => 'switch', 
+					'label' => esc_html__( 'Show Title', 'helium' ), 
+					'description' => esc_html__( 'Switch to show/hide the portfolio title before the content.', 'helium' ), 
+					'std' => true
+				), 
 				'page_layout' => array(
 					'type' => 'select', 
-					'label' => __( 'Portfolio Page Layout', 'helium' ), 
-					'description' => __( 'Specify the layout of the portfolio page.', 'helium' ), 
+					'label' => esc_html__( 'Portfolio Page Layout', 'helium' ), 
+					'description' => esc_html__( 'Specify the layout of the portfolio page.', 'helium' ), 
 					'choices' => array(
-						'boxed' => __( 'Boxed', 'helium' ), 
-						'fullwidth' => __( 'Fullwidth', 'helium' )
+						'boxed' => esc_html__( 'Boxed', 'helium' ), 
+						'fullwidth' => esc_html__( 'Fullwidth', 'helium' )
 					), 
 					'std' => 'boxed', 
 					'scalar' => true
 				), 
 				'archive_page' => array(
 					'type' => 'select', 
-					'label' => __( 'Portfolio Archive Page', 'helium' ), 
-					'description' => __( 'Choose the archive page of this portfolio item.', 'helium' ), 
+					'label' => esc_html__( 'Portfolio Archive Page', 'helium' ), 
+					'description' => esc_html__( 'Choose the archive page of this portfolio item.', 'helium' ), 
 					'choices' => 'helium_portfolio_pages', 
 					'std' => 0, 
 					'scalar' => true
 				), 
 				'media_position' => array(
 					'type' => 'select', 
-					'label' => __( 'Portfolio Media Layout', 'helium' ), 
-					'description' => __( 'Specify how the portfolio media is displayed.', 'helium' ), 
+					'label' => esc_html__( 'Portfolio Media Layout', 'helium' ), 
+					'description' => esc_html__( 'Specify how the portfolio media is displayed.', 'helium' ), 
 					'choices' => array(
-						'top' => __( 'Top', 'helium' ), 
-						'left' => __( 'Left', 'helium' ), 
-						'right' => __( 'Right', 'helium' )
+						'top' => esc_html__( 'Top', 'helium' ), 
+						'left' => esc_html__( 'Left', 'helium' ), 
+						'right' => esc_html__( 'Right', 'helium' )
 					), 
 					'std' => 'top'
 				), 
 				'details_position' => array(
 					'type' => 'select', 
-					'label' => __( 'Portfolio Details Layout', 'helium' ), 
-					'description' => __( 'Specify how the portfolio details is displayed. Choosing left or right for media position will move the details to the bottom.', 'helium' ), 
+					'label' => esc_html__( 'Portfolio Details Layout', 'helium' ), 
+					'description' => esc_html__( 'Specify how the portfolio details is displayed. Choosing left or right for media position will move the details to the bottom.', 'helium' ), 
 					'choices' => array(
-						'hidden' => __( 'Hidden', 'helium' ), 
-						'left' => __( 'Left', 'helium' ), 
-						'right' => __( 'Right', 'helium' )
+						'hidden' => esc_html__( 'Hidden', 'helium' ), 
+						'left' => esc_html__( 'Left', 'helium' ), 
+						'right' => esc_html__( 'Right', 'helium' )
 					), 
 					'std' => 'left'
 				), 
 				'details' => array(
 					'type' => 'repeater', 
-					'label' => __( 'Details', 'helium' ), 
-					'description' => __( 'Specify the portfolio details to show.', 'helium' ), 
+					'label' => esc_html__( 'Details', 'helium' ), 
+					'description' => esc_html__( 'Specify the portfolio details to show.', 'helium' ), 
 					'fields' => array(
 						'type' => array(
 							'type' => 'select', 
-							'label' => __( 'Detail Type', 'helium' ), 
-							'description' => __( 'Choose the portfolio detail type.', 'helium' ), 
+							'label' => esc_html__( 'Detail Type', 'helium' ), 
+							'description' => esc_html__( 'Choose the portfolio detail type.', 'helium' ), 
 							'choices' => array(
-								'categories' => __( 'Categories', 'helium' ), 
-								'url' => __( 'URL', 'helium' ), 
-								'client' => __( 'Client', 'helium' ), 
-								'share' => __( 'Share', 'helium' ), 
-								'custom' => __( 'Custom', 'helium' )
+								'categories' => esc_html__( 'Categories', 'helium' ), 
+								'url' => esc_html__( 'URL', 'helium' ), 
+								'client' => esc_html__( 'Client', 'helium' ), 
+								'share' => esc_html__( 'Share', 'helium' ), 
+								'custom' => esc_html__( 'Custom', 'helium' )
 							), 
 							'std' => 'custom'
 						), 
 						'label' => array(
 							'type' => 'text', 
-							'label' => __( 'Label', 'helium' ), 
-							'description' => __( 'Enter the detail label.', 'helium' ), 
+							'label' => esc_html__( 'Label', 'helium' ), 
+							'description' => esc_html__( 'Enter the detail label.', 'helium' ), 
 							'std' => '', 
 						), 
 						'custom_value' => array(
 							'type' => 'textarea', 
-							'label' => __( 'Custom Value', 'helium' ), 
-							'description' => __( 'Enter the custom detail value.', 'helium' ), 
+							'label' => esc_html__( 'Custom Value', 'helium' ), 
+							'description' => esc_html__( 'Enter the custom detail value.', 'helium' ), 
 							'std' => '', 
 							'criteria' => 'type:is(custom)'
 						)
@@ -161,94 +188,94 @@ if( ! function_exists( 'helium_youxi_portfolio_cpt_metaboxes' ) ):
 		);
 
 		$metaboxes['media'] = array(
-			'title' => __( 'Media', 'helium' ), 
+			'title' => esc_html__( 'Media', 'helium' ), 
 			'fields' => array(
 				'type' => array(
 					'type' => 'select', 
-					'label' => __( 'Media Type', 'helium' ), 
-					'description' => __( 'Choose the type of media to display.', 'helium' ), 
+					'label' => esc_html__( 'Media Type', 'helium' ), 
+					'description' => esc_html__( 'Choose the type of media to display.', 'helium' ), 
 					'choices' => array(
-						'featured-image' => __( 'Featured Image', 'helium' ), 
-						'stacked' => __( 'Stacked Images', 'helium' ), 
-						'slider' => __( 'Slider', 'helium' ), 
-						'justified-grids' => __( 'Justified Grids', 'helium' ), 
-						'video' => __( 'Video', 'helium' ), 
-						'audio' => __( 'Audio', 'helium' )
+						'featured-image' => esc_html__( 'Featured Image', 'helium' ), 
+						'stacked' => esc_html__( 'Stacked Images', 'helium' ), 
+						'slider' => esc_html__( 'Slider', 'helium' ), 
+						'justified-grids' => esc_html__( 'Justified Grids', 'helium' ), 
+						'video' => esc_html__( 'Video', 'helium' ), 
+						'audio' => esc_html__( 'Audio', 'helium' )
 					), 
 					'std' => 'featured-image'
 				), 
 				'autoHeight' => array(
 					'type' => 'switch', 
-					'label' => __( 'Slider: Auto Height', 'helium' ), 
-					'description' => __( 'Switch to automatically update slider height based on each slide.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Auto Height', 'helium' ), 
+					'description' => esc_html__( 'Switch to automatically update slider height based on each slide.', 'helium' ), 
 					'std' => true, 
 					'criteria' => 'type:is(slider)'
 				), 
 				'autoScaleSliderRatio' => array(
 					'type' => 'aspect-ratio', 
-					'label' => __( 'Slider: Aspect Ratio', 'helium' ), 
-					'description' => __( 'Specify the slider aspect ratio when auto height is disabled.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Aspect Ratio', 'helium' ), 
+					'description' => esc_html__( 'Specify the slider aspect ratio when auto height is disabled.', 'helium' ), 
 					'std' => array( 'width' => 4, 'height' => 3 ), 
 					'criteria' => 'type:is(slider),autoHeight:is(0)'
 				), 
 				'imageScaleMode' => array(
 					'type' => 'select', 
-					'label' => __( 'Slider: Image Scale Mode', 'helium' ), 
-					'description' => __( 'Specify the slider image scaling mode.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Image Scale Mode', 'helium' ), 
+					'description' => esc_html__( 'Specify the slider image scaling mode.', 'helium' ), 
 					'choices' => array(
-						'fill' => __( 'Fill', 'helium' ), 
-						'fit' => __( 'Fit', 'helium' )
+						'fill' => esc_html__( 'Fill', 'helium' ), 
+						'fit' => esc_html__( 'Fit', 'helium' )
 					), 
 					'std' => 'fill', 
 					'criteria' => 'type:is(slider),autoHeight:is(0)'
 				), 
 				'controlNavigation' => array(
 					'type' => 'switch', 
-					'label' => __( 'Slider: Navigation Bullets', 'helium' ), 
-					'description' => __( 'Switch to toggle the slider navigation bullets.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Navigation Bullets', 'helium' ), 
+					'description' => esc_html__( 'Switch to toggle the slider navigation bullets.', 'helium' ), 
 					'std' => true, 
 					'criteria' => 'type:is(slider)'
 				), 
 				'arrowsNav' => array(
 					'type' => 'switch', 
-					'label' => __( 'Slider: Navigation Arrows', 'helium' ), 
-					'description' => __( 'Switch to toggle the slider navigation arrows.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Navigation Arrows', 'helium' ), 
+					'description' => esc_html__( 'Switch to toggle the slider navigation arrows.', 'helium' ), 
 					'std' => true, 
 					'criteria' => 'type:is(slider)'
 				), 
 				'loop' => array(
 					'type' => 'switch', 
-					'label' => __( 'Slider: Loop', 'helium' ), 
-					'description' => __( 'Switch to allow the slider to go to the first from the last slide.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Loop', 'helium' ), 
+					'description' => esc_html__( 'Switch to allow the slider to go to the first from the last slide.', 'helium' ), 
 					'std' => false, 
 					'criteria' => 'type:is(slider)'
 				), 
 				'slidesOrientation' => array(
 					'type' => 'select', 
-					'label' => __( 'Slider: Orientation', 'helium' ), 
-					'description' => __( 'Specify the slider orientation.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Orientation', 'helium' ), 
+					'description' => esc_html__( 'Specify the slider orientation.', 'helium' ), 
 					'choices' => array(
-						'vertical' => __( 'Vertical', 'helium' ), 
-						'horizontal' => __( 'Horizontal', 'helium' )
+						'vertical' => esc_html__( 'Vertical', 'helium' ), 
+						'horizontal' => esc_html__( 'Horizontal', 'helium' )
 					), 
 					'std' => 'horizontal', 
 					'criteria' => 'type:is(slider),autoHeight:is(0)'
 				), 
 				'transitionType' => array(
 					'type' => 'select', 
-					'label' => __( 'Slider: Transition Type', 'helium' ), 
-					'description' => __( 'Specify the slider transition type.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Transition Type', 'helium' ), 
+					'description' => esc_html__( 'Specify the slider transition type.', 'helium' ), 
 					'choices' => array(
-						'move' => __( 'Move', 'helium' ), 
-						'fade' => __( 'Fade', 'helium' )
+						'move' => esc_html__( 'Move', 'helium' ), 
+						'fade' => esc_html__( 'Fade', 'helium' )
 					), 
 					'std' => 'move', 
 					'criteria' => 'type:is(slider)'
 				), 
 				'transitionSpeed' => array(
 					'type' => 'uislider', 
-					'label' => __( 'Slider: Transition Speed', 'helium' ), 
-					'description' => __( 'Specify the slider transition speed.', 'helium' ), 
+					'label' => esc_html__( 'Slider: Transition Speed', 'helium' ), 
+					'description' => esc_html__( 'Specify the slider transition speed.', 'helium' ), 
 					'widgetopts' => array(
 						'min' => 100, 
 						'max' => 5000, 
@@ -258,67 +285,67 @@ if( ! function_exists( 'helium_youxi_portfolio_cpt_metaboxes' ) ):
 					'criteria' => 'type:is(slider)'
 				), 
 				'images' => array(
-					'type' => 'image', 
-					'label' => __( 'Images', 'helium' ), 
-					'description' => __( 'Choose here the images to use.', 'helium' ), 
+					'type' => 'gallery', 
+					'label' => esc_html__( 'Images', 'helium' ), 
+					'description' => esc_html__( 'Choose here the images to use.', 'helium' ), 
 					'multiple' => 'add', 
 					'criteria' => 'type:not(featured-image),type:not(video),type:not(audio)'
 				), 
 				'video_type' => array(
 					'type' => 'select', 
-					'label' => __( 'Video Type', 'helium' ), 
-					'description' => __( 'Choose here the video type.', 'helium' ), 
+					'label' => esc_html__( 'Video Type', 'helium' ), 
+					'description' => esc_html__( 'Choose here the video type.', 'helium' ), 
 					'choices' => array(
-						'embed' => __( 'Embedded (YouTube/Vimeo)', 'helium' ), 
-						'hosted' => __( 'Hosted', 'helium' )
+						'embed' => esc_html__( 'Embedded (YouTube/Vimeo)', 'helium' ), 
+						'hosted' => esc_html__( 'Hosted', 'helium' )
 					), 
 					'std' => 'hosted', 
 					'criteria' => 'type:is(video)'
 				), 
 				'video_embed' => array(
 					'type' => 'textarea', 
-					'label' => __( 'Video Embed Code (YouTube/Vimeo)', 'helium' ), 
-					'description' => __( 'Enter here the video embed code (YouTube/Vimeo).', 'helium' ), 
+					'label' => esc_html__( 'Video Embed Code (YouTube/Vimeo)', 'helium' ), 
+					'description' => esc_html__( 'Enter here the video embed code (YouTube/Vimeo).', 'helium' ), 
 					'std' => '', 
 					'criteria' => 'type:is(video),video_type:is(embed)'
 				), 
 				'video_src' => array(
 					'type' => 'upload', 
-					'label' => __( 'Video Source', 'helium' ), 
+					'label' => esc_html__( 'Video Source', 'helium' ), 
 					'library_type' => 'video', 
-					'description' => __( 'Choose here the hosted video source.', 'helium' ), 
+					'description' => esc_html__( 'Choose here the hosted video source.', 'helium' ), 
 					'criteria' => 'type:is(video),video_type:is(hosted)'
 				), 
 				'video_poster' => array(
 					'type' => 'image', 
 					'multiple' => false, 
-					'label' => __( 'Video Poster', 'helium' ), 
-					'description' => __( 'Upload here an image that will be used either as the poster or fallback for unsupported devices.', 'helium' ), 
+					'label' => esc_html__( 'Video Poster', 'helium' ), 
+					'description' => esc_html__( 'Upload here an image that will be used either as the poster or fallback for unsupported devices.', 'helium' ), 
 					'criteria' => 'type:is(video),video_type:is(hosted)'
 				), 
 				'audio_type' => array(
 					'type' => 'select', 
-					'label' => __( 'Audio Type', 'helium' ), 
-					'description' => __( 'Choose here the audio type.', 'helium' ), 
+					'label' => esc_html__( 'Audio Type', 'helium' ), 
+					'description' => esc_html__( 'Choose here the audio type.', 'helium' ), 
 					'choices' => array(
-						'embed' => __( 'Embedded (SoundCloud)', 'helium' ), 
-						'hosted' => __( 'Hosted', 'helium' )
+						'embed' => esc_html__( 'Embedded (SoundCloud)', 'helium' ), 
+						'hosted' => esc_html__( 'Hosted', 'helium' )
 					), 
 					'std' => 'hosted', 
 					'criteria' => 'type:is(audio)'
 				), 
 				'audio_embed' => array(
 					'type' => 'textarea', 
-					'label' => __( 'Embed Code (SoundCloud)', 'helium' ), 
-					'description' => __( 'Enter here the audio embed code (SoundCloud).', 'helium' ), 
+					'label' => esc_html__( 'Embed Code (SoundCloud)', 'helium' ), 
+					'description' => esc_html__( 'Enter here the audio embed code (SoundCloud).', 'helium' ), 
 					'std' => '', 
 					'criteria' => 'type:is(audio),audio_type:is(embed)'
 				), 
 				'audio_src' => array(
 					'type' => 'upload', 
-					'label' => __( 'Audio Source', 'helium' ), 
+					'label' => esc_html__( 'Audio Source', 'helium' ), 
 					'library_type' => 'audio', 
-					'description' => __( 'Choose here the hosted audio source.', 'helium' ), 
+					'description' => esc_html__( 'Choose here the hosted audio source.', 'helium' ), 
 					'criteria' => 'type:is(audio),audio_type:is(hosted)'
 				)
 			)
@@ -342,121 +369,122 @@ if( ! function_exists( 'helium_add_portfolio_metabox' ) ) {
 		/* Portfolio Archive Page Template */
 		$metaboxes['portfolio_grid_settings'] = array(
 
-			'title' => __( 'Page Template: Portfolio', 'helium' ), 
+			'title' => esc_html__( 'Page Template: Portfolio', 'helium' ), 
+
+			'page_template' => 'archive-portfolio', 
 
 			'fields' => array(
 				'use_defaults' => array(
 					'type' => 'switch', 
-					'label' => __( 'Use Default Settings', 'helium' ), 
-					'description' => __( 'Switch to use the default portfolio grid settings.', 'helium' ), 
+					'label' => esc_html__( 'Use Default Settings', 'helium' ), 
+					'description' => esc_html__( 'Switch to use the default portfolio grid settings.', 'helium' ), 
 					'std' => false
 				), 
 				'show_filter' => array(
 					'type' => 'switch', 
-					'label' => __( 'Show Filter', 'helium' ), 
-					'description' => __( 'Switch to display the portfolio filter.', 'helium' ), 
+					'label' => esc_html__( 'Show Filter', 'helium' ), 
+					'description' => esc_html__( 'Switch to display the portfolio filter.', 'helium' ), 
 					'criteria' => 'use_defaults:is(0)', 
 					'std' => true
 				), 
 				'pagination' => array(
 					'type' => 'select', 
-					'label' => __( 'Pagination Type', 'helium' ), 
-					'description' => __( 'Specify the portfolio pagination type.', 'helium' ), 
+					'label' => esc_html__( 'Pagination Type', 'helium' ), 
+					'description' => esc_html__( 'Specify the portfolio pagination type.', 'helium' ), 
 					'choices' => array(
-						'ajax' => __( 'AJAX', 'helium' ), 
-						'infinite' => __( 'Infinite', 'helium' ), 
-						'numbered' => __( 'Numbered', 'helium' ), 
-						'prev_next' => __( 'Prev/Next', 'helium' ), 
-						'show_all' => __( 'None (Show all)', 'helium' )
+						'ajax' => esc_html__( 'AJAX', 'helium' ), 
+						'infinite' => esc_html__( 'Infinite', 'helium' ), 
+						'numbered' => esc_html__( 'Numbered', 'helium' ), 
+						'prev_next' => esc_html__( 'Prev/Next', 'helium' ), 
+						'show_all' => esc_html__( 'None (Show all)', 'helium' )
 					), 
 					'criteria' => 'use_defaults:is(0)', 
 					'std' => 'ajax'
 				), 
 				'ajax_button_text' => array(
 					'type' => 'text', 
-					'label' => __( 'AJAX Button Text', 'helium' ), 
-					'description' => __( 'Specify the text to display on the AJAX load more button.', 'helium' ), 
+					'label' => esc_html__( 'AJAX Button Text', 'helium' ), 
+					'description' => esc_html__( 'Specify the text to display on the AJAX load more button.', 'helium' ), 
 					'std' => 'Load More', 
 					'criteria' => 'pagination:is(ajax),use_defaults:is(0)'
 				), 
 				'ajax_button_complete_text' => array(
 					'type' => 'text', 
-					'label' => __( 'AJAX Button Complete Text', 'helium' ), 
-					'description' => __( 'Specify the text to display on the AJAX load more button when there are no more items to load.', 'helium' ), 
+					'label' => esc_html__( 'AJAX Button Complete Text', 'helium' ), 
+					'description' => esc_html__( 'Specify the text to display on the AJAX load more button when there are no more items to load.', 'helium' ), 
 					'std' => 'No More Items', 
 					'criteria' => 'pagination:is(ajax),use_defaults:is(0)'
 				), 
 				'posts_per_page' => array(
 					'type' => 'uislider', 
-					'label' => __( 'Posts Per Page', 'helium' ), 
-					'description' => __( 'Specify how many portfolio items to show per page.', 'helium' ), 
+					'label' => esc_html__( 'Posts Per Page', 'helium' ), 
+					'description' => esc_html__( 'Specify how many portfolio items to show per page.', 'helium' ), 
 					'widgetopts' => array(
 						'min' => 1, 
 						'max' => 20, 
 						'step' => 1
 					), 
-					'criteria' => 'use_defaults:is(0)', 
+					'criteria' => 'use_defaults:is(0),pagination:not(show_all)', 
 					'std' => 10
 				), 
 				'include' => array(
 					'type' => 'checkboxlist', 
-					'label' => __( 'Included Categories', 'helium' ), 
-					'description' => __( 'Specify the portfolio categories to include (leave unchecked to include all).', 'helium' ), 
+					'label' => esc_html__( 'Included Categories', 'helium' ), 
+					'description' => esc_html__( 'Specify the portfolio categories to include (leave unchecked to include all).', 'helium' ), 
 					'choices' => get_terms( youxi_portfolio_tax_name(), array( 'fields' => 'id=>name', 'hide_empty' => false ) ), 
 					'criteria' => 'use_defaults:is(0)'
 				), 
 				'behavior' => array(
 					'type' => 'select', 
-					'label' => __( 'Behavior', 'helium' ), 
-					'description' => __( 'Specify the behavior when clicking the thumbnail image.', 'helium' ), 
+					'label' => esc_html__( 'Behavior', 'helium' ), 
+					'description' => esc_html__( 'Specify the behavior when clicking the thumbnail image.', 'helium' ), 
 					'choices' => array(
-						'none' => __( 'None', 'helium' ), 
-						'lightbox' => __( 'Show Image in Lightbox', 'helium' ), 
-						'page' => __( 'Go to Detail Page', 'helium' )
+						'none' => esc_html__( 'None', 'helium' ), 
+						'lightbox' => esc_html__( 'Show Image in Lightbox', 'helium' ), 
+						'page' => esc_html__( 'Go to Detail Page', 'helium' )
 					), 
 					'criteria' => 'use_defaults:is(0)'
 				), 
 				'orderby' => array(
 					'type' => 'select', 
-					'label' => __( 'Order By', 'helium' ), 
-					'description' => __( 'Specify in what order the items should be displayed.', 'helium' ), 
+					'label' => esc_html__( 'Order By', 'helium' ), 
+					'description' => esc_html__( 'Specify in what order the items should be displayed.', 'helium' ), 
 					'choices' => array(
-						'date' => __( 'Date', 'helium' ), 
-						'menu_order' => __( 'Menu Order', 'helium' ), 
-						'title' => __( 'Title', 'helium' ), 
-						'ID' => __( 'ID', 'helium' ), 
-						'rand' => __( 'Random', 'helium' )
+						'date' => esc_html__( 'Date', 'helium' ), 
+						'menu_order' => esc_html__( 'Menu Order', 'helium' ), 
+						'title' => esc_html__( 'Title', 'helium' ), 
+						'ID' => esc_html__( 'ID', 'helium' )
 					), 
 					'criteria' => 'use_defaults:is(0)', 
 					'std' => 'date'
 				), 
 				'order' => array(
 					'type' => 'select', 
-					'label' => __( 'Order', 'helium' ), 
-					'description' => __( 'Specify how to order the items.', 'helium' ), 
+					'label' => esc_html__( 'Order', 'helium' ), 
+					'description' => esc_html__( 'Specify how to order the items.', 'helium' ), 
 					'choices' => array(
-						'DESC' => __( 'Descending', 'helium' ), 
-						'ASC' => __( 'Ascending', 'helium' )
+						'DESC' => esc_html__( 'Descending', 'helium' ), 
+						'ASC' => esc_html__( 'Ascending', 'helium' )
 					), 
-					'criteria' => 'use_defaults:is(0)', 
+					'criteria' => 'use_defaults:is(0),orderby:not(menu_order)', 
 					'std' => 'DESC'
 				), 
 				'layout' => array(
 					'type' => 'select', 
-					'label' => __( 'Layout', 'helium' ), 
-					'description' => __( 'Specify the portfolio layout.', 'helium' ), 
+					'label' => esc_html__( 'Layout', 'helium' ), 
+					'description' => esc_html__( 'Specify the portfolio layout.', 'helium' ), 
 					'choices' => array(
-						'classic'    => __( 'Classic', 'helium' ), 
-						'masonry'    => __( 'Masonry', 'helium' ), 
-						'justified'  => __( 'Justified', 'helium' )
+						'classic'    => esc_html__( 'Classic', 'helium' ), 
+						'masonry'    => esc_html__( 'Masonry', 'helium' ), 
+						'justified'  => esc_html__( 'Justified', 'helium' )
 					), 
 					'criteria' => 'use_defaults:is(0)', 
 					'std' => 'justified'
 				), 
 				'columns' => array(
 					'type' => 'uislider', 
-					'label' => __( 'Columns', 'helium' ), 
-					'description' => __( 'Specify in how many columns the items should be displayed in the masonry/classic layout.', 'helium' ), 
+					'label' => esc_html__( 'Columns', 'helium' ), 
+					'description' => esc_html__( 'Specify in how many columns the items should be displayed in the masonry/classic layout.', 'helium' ), 
 					'widgetopts' => array(
 						'min' => 3, 
 						'max' => 5, 
@@ -470,13 +498,15 @@ if( ! function_exists( 'helium_add_portfolio_metabox' ) ) {
 
 		$metaboxes['portfolio_slider_settings'] = array(
 
-			'title' => __( 'Page Template: Portfolio Slider', 'helium' ), 
+			'title' => esc_html__( 'Page Template: Portfolio Slider', 'helium' ), 
+
+			'page_template' => 'page-templates/portfolio-slider', 
 
 			'fields' => array(
 				'posts_per_page' => array(
 					'type' => 'uislider', 
-					'label' => __( 'Number of Slides', 'helium' ), 
-					'description' => __( 'Specify how many portfolio items to show on the slider.', 'helium' ), 
+					'label' => esc_html__( 'Number of Slides', 'helium' ), 
+					'description' => esc_html__( 'Specify how many portfolio items to show on the slider.', 'helium' ), 
 					'widgetopts' => array(
 						'min' => 1, 
 						'max' => 10, 
@@ -486,26 +516,27 @@ if( ! function_exists( 'helium_add_portfolio_metabox' ) ) {
 				), 
 				'orderby' => array(
 					'type' => 'select', 
-					'label' => __( 'Order By', 'helium' ), 
-					'description' => __( 'Specify in what order the items should be displayed.', 'helium' ), 
+					'label' => esc_html__( 'Order By', 'helium' ), 
+					'description' => esc_html__( 'Specify in what order the items should be displayed.', 'helium' ), 
 					'choices' => array(
-						'date' => __( 'Date', 'helium' ), 
-						'menu_order' => __( 'Menu Order', 'helium' ), 
-						'title' => __( 'Title', 'helium' ), 
-						'ID' => __( 'ID', 'helium' ), 
-						'rand' => __( 'Random', 'helium' )
+						'date' => esc_html__( 'Date', 'helium' ), 
+						'menu_order' => esc_html__( 'Menu Order', 'helium' ), 
+						'title' => esc_html__( 'Title', 'helium' ), 
+						'ID' => esc_html__( 'ID', 'helium' ), 
+						'rand' => esc_html__( 'Random', 'helium' )
 					), 
 					'std' => 'date'
 				), 
 				'order' => array(
 					'type' => 'select', 
-					'label' => __( 'Order', 'helium' ), 
-					'description' => __( 'Specify how to order the items.', 'helium' ), 
+					'label' => esc_html__( 'Order', 'helium' ), 
+					'description' => esc_html__( 'Specify how to order the items.', 'helium' ), 
 					'choices' => array(
-						'DESC' => __( 'Descending', 'helium' ), 
-						'ASC' => __( 'Ascending', 'helium' )
+						'DESC' => esc_html__( 'Descending', 'helium' ), 
+						'ASC' => esc_html__( 'Ascending', 'helium' )
 					), 
-					'std' => 'DESC'
+					'std' => 'DESC', 
+					'criteria' => 'orderby:not(menu_order)'
 				)
 			)
 		);
@@ -526,12 +557,6 @@ add_action( 'init', 'helium_add_portfolio_metabox' );
 ============================================================================= */
 
 add_filter( 'youxi_portfolio_register_shortcode', '__return_false' );
-
-/* ==========================================================================
-	Disable Gallery (Youxi Portfolio 1.2+)
-============================================================================= */
-
-add_filter( 'youxi_portfolio_use_gallery', '__return_false' );
 
 /* ==========================================================================
 	Remove Portfolio Page Template

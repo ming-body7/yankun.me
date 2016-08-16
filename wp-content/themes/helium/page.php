@@ -15,7 +15,7 @@ $layout = wp_parse_args( $post->layout, array(
 
 		<header class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 				the_title( '<h1 class="entry-title content-title">', '</h1>' );
 				?>
@@ -26,7 +26,7 @@ $layout = wp_parse_args( $post->layout, array(
 
 		<div class="content-wrap">
 
-			<div class="content-box">
+			<div class="content-box clearfix">
 
 				<?php if( has_post_thumbnail() ):
 
@@ -53,7 +53,7 @@ $layout = wp_parse_args( $post->layout, array(
 								</div>
 
 								<?php wp_link_pages(array(
-									'before' => '<nav class="pages-nav"><ul>', 
+									'before' => '<nav class="pages-nav"><ul class="inline-list">', 
 									'after' => '</ul></nav>', 
 									'separator' => '', 
 									'pagelink' => '<span class="pages-nav-item">%</span>'
@@ -71,6 +71,34 @@ $layout = wp_parse_args( $post->layout, array(
 				<?php endif; ?>
 
 			</div>
+
+			<?php if( have_comments() || comments_open() ): ?>
+			<div class="content-box clearfix">
+
+				<div class="entry-comments-wrap">
+
+					<div class="content-wrap-inner three-quarters-vertical-padding">
+
+						<div class="container">
+
+							<div class="row">
+
+								<div class="col-lg-12">
+
+									<?php comments_template(); ?>
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+			<?php endif; ?>
 
 		</div>
 

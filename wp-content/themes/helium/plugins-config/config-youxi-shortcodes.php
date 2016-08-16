@@ -20,6 +20,32 @@ add_filter( 'youxi_shortcode_enqueue_assets', '__return_false' );
 add_filter( 'youxi_shortcode_prefix', '__return_empty_string' );
 
 /**
+ * Add the tinymce and page builder to posts
+ */
+if( ! function_exists( 'helium_shortcode_tinymce_post_types' ) ) {
+
+	function helium_shortcode_tinymce_post_types( $post_types ) {
+
+		if( ! is_array( $post_types ) ) {
+			$post_types = array();
+		}
+
+		$post_types[] = 'post';
+		
+		if( function_exists( 'youxi_portfolio_cpt_name' ) ) {
+			$post_types[] = youxi_portfolio_cpt_name();
+		}
+
+		if( class_exists( 'Easy_Digital_Downloads' ) ) {
+			$post_types[] = 'download';
+		}
+
+		return $post_types;
+	}
+}
+add_filter( 'youxi_shortcode_tinymce_post_types', 'helium_shortcode_tinymce_post_types' );
+
+/**
  * Hook to modify some shortcodes
  */
 if( ! function_exists( 'helium_youxi_shortcode_register' ) ) {
@@ -59,7 +85,7 @@ if( ! function_exists( 'helium_clients_shortcode_cb' ) ):
 
 	function helium_clients_shortcode_cb( $atts, $content, $tag ) {
 
-		$output = '<div class="client-list"><ul>' . do_shortcode( $content ) . '</ul></div>';
+		$output = '<div class="client-list"><ul class="clearfix plain-list">' . do_shortcode( $content ) . '</ul></div>';
 
 		return $output;
 	}
@@ -148,7 +174,7 @@ if( ! function_exists( 'helium_heading_shortcode_cb' ) ):
 		$classes[] = sanitize_html_class( trim( $extra_classes ) );
 
 		if( $classes ) {
-			$classes = ' class="' . esc_attr( join( ' ', array_filter( $classes ) ) ) . '"';
+			$classes = ' class="' . esc_attr( implode( ' ', array_filter( $classes ) ) ) . '"';
 		} else {
 			$classes = '';
 		}
@@ -168,42 +194,42 @@ if( ! function_exists( 'helium_heading_shortcode_atts' ) ):
 		return array_merge( $atts, array(
 			'alignment' => array(
 				'type' => 'radio', 
-				'label' => __( 'Heading Alignment', 'helium' ), 
-				'description' => __( 'Choose here the heading text alignment.', 'helium' ), 
+				'label' => esc_html__( 'Heading Alignment', 'helium' ), 
+				'description' => esc_html__( 'Choose here the heading text alignment.', 'helium' ), 
 				'choices' => array(
-					'left' => __( 'Left', 'helium' ), 
-					'center' => __( 'Center', 'helium' ), 
-					'right' => __( 'Right', 'helium' )
+					'left' => esc_html__( 'Left', 'helium' ), 
+					'center' => esc_html__( 'Center', 'helium' ), 
+					'right' => esc_html__( 'Right', 'helium' )
 				), 
 				'std' => 'left', 
 				'fieldset' => 'style'
 			), 
 			'style' => array(
 				'type' => 'radio', 
-				'label' => __( 'Heading Style', 'helium' ), 
-				'description' => __( 'Choose the heading style.', 'helium' ), 
+				'label' => esc_html__( 'Heading Style', 'helium' ), 
+				'description' => esc_html__( 'Choose the heading style.', 'helium' ), 
 				'choices' => array(
-					0 => __( 'Default', 'helium' ), 
-					'bordered' => __( 'Bordered', 'helium' ), 
-					'striped' => __( 'Striped', 'helium' )
+					0 => esc_html__( 'Default', 'helium' ), 
+					'bordered' => esc_html__( 'Bordered', 'helium' ), 
+					'striped' => esc_html__( 'Striped', 'helium' )
 				), 
 				'std' => 0
 			), 
 			'uppercase' => array(
 				'type' => 'switch', 
-				'label' => __( 'Uppercase Letters', 'helium' ), 
-				'description' => __( 'Switch to make the text uppercase.', 'helium' ), 
+				'label' => esc_html__( 'Uppercase Letters', 'helium' ), 
+				'description' => esc_html__( 'Switch to make the text uppercase.', 'helium' ), 
 				'std' => false, 
 				'fieldset' => 'style'
 			), 
 			'remove_margins' => array(
 				'type' => 'checkboxlist', 
-				'label' => __( 'Remove Margins', 'helium' ), 
+				'label' => esc_html__( 'Remove Margins', 'helium' ), 
 				'uncheckable' => true, 
-				'description' => __( 'Choose here which margins to remove from the heading.', 'helium' ), 
+				'description' => esc_html__( 'Choose here which margins to remove from the heading.', 'helium' ), 
 				'choices' => array(
-					'top' => __( 'Top', 'helium' ), 
-					'bottom' => __( 'Bottom', 'helium' ), 
+					'top' => esc_html__( 'Top', 'helium' ), 
+					'bottom' => esc_html__( 'Bottom', 'helium' ), 
 				), 
 				'serialize' => 'js:function( data ) {
 					return $.map( data, function( data, key ) {
@@ -222,8 +248,8 @@ if( ! function_exists( 'helium_heading_shortcode_atts' ) ):
 			), 
 			'extra_classes' => array(
 				'type' => 'text', 
-				'label' => __( 'Extra CSS Classes', 'helium' ), 
-				'description' => __( 'Enter here your custom CSS classes to apply to the heading.', 'helium' ), 
+				'label' => esc_html__( 'Extra CSS Classes', 'helium' ), 
+				'description' => esc_html__( 'Enter here your custom CSS classes to apply to the heading.', 'helium' ), 
 				'std' => '', 
 				'fieldset' => 'style'
 			)
@@ -241,7 +267,7 @@ function helium_heading_shortcode_fieldsets( $fieldsets ) {
 	return array_merge( $fieldsets, array(
 		'style' => array(
 			'id' => 'style', 
-			'title' => __( 'Styling', 'helium' )
+			'title' => esc_html__( 'Styling', 'helium' )
 		)
 	));
 }
@@ -331,8 +357,8 @@ if( ! function_exists( 'helium_pricing_table_shortcode_atts' ) ):
 		$pn = array(
 			'subtitle' => array(
 				'type' => 'text', 
-				'label' => __( 'Subtitle', 'youxi' ), 
-				'description' => __( 'Specify the subtitle to show below the title.', 'youxi' ), 
+				'label' => esc_html__( 'Subtitle', 'helium' ), 
+				'description' => esc_html__( 'Specify the subtitle to show below the title.', 'helium' ), 
 				'std' => ''
 			)
 		);
@@ -361,8 +387,8 @@ if( ! function_exists( 'helium_progressbar_shortcode_atts' ) ):
 		return array_merge( array(
 			'label' => array(
 				'type' => 'text', 
-				'label' => __( 'Label', 'helium' ), 
-				'description' => __( 'Enter here the progressbar label.', 'helium' ), 
+				'label' => esc_html__( 'Label', 'helium' ), 
+				'description' => esc_html__( 'Enter here the progressbar label.', 'helium' ), 
 				'std' => ''
 			)
 		), $atts );
@@ -398,8 +424,8 @@ if( ! function_exists( 'helium_progressbar_shortcode_cb' ) ):
 				$o .= '<span class="progress-label">' . esc_html( $label ) . '</span>';
 			endif;
 
-			$o .= '<div class="' . join( ' ', $container_classes ) . '">';
-				$o .= '<div class="' . join( ' ', $bar_classes ) . '" role="progressbar" aria-valuenow="' . esc_attr( $value ) . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . esc_attr( $value ) . '%"></div>';
+			$o .= '<div class="' . esc_attr( implode( ' ', $container_classes ) ) . '">';
+				$o .= '<div class="' . esc_attr( implode( ' ', $bar_classes ) ) . '" role="progressbar" aria-valuenow="' . esc_attr( $value ) . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . esc_attr( $value ) . '%"></div>';
 			$o .= '</div>';
 
 		$o .= '</div>';
@@ -472,19 +498,19 @@ if( ! function_exists( 'helium_row_shortcode_atts' ) ):
 		return array_merge( $atts, array(
 			'wrap_method' => array(
 				'type' => 'select', 
-				'label' => __( 'Wrap Mode', 'helium' ), 
-				'description' => __( 'Choose the row wrapping method. When choosing values other than <strong>none</strong>, make sure the page layout setting has <strong>Wrap Content</strong> disabled.', 'helium' ), 
+				'label' => esc_html__( 'Wrap Mode', 'helium' ), 
+				'description' => esc_html__( 'Choose the row wrapping method. When choosing values other than `none`, make sure the page layout setting has `Wrap Content` disabled.', 'helium' ), 
 				'choices' => array(
-					0 => __( 'None', 'helium' ), 
-					'fullwidth' => __( 'Fullwidth', 'helium' ), 
-					'inner' => __( 'Inner', 'helium' )
+					0 => esc_html__( 'None', 'helium' ), 
+					'fullwidth' => esc_html__( 'Fullwidth', 'helium' ), 
+					'inner' => esc_html__( 'Inner', 'helium' )
 				), 
 				'std' => 0
 			), 
 			'extra_classes' => array(
 				'type' => 'text', 
-				'label' => __( 'Extra CSS Classes', 'helium' ), 
-				'description' => __( 'Enter here your custom CSS classes to apply to the row.', 'helium' ), 
+				'label' => esc_html__( 'Extra CSS Classes', 'helium' ), 
+				'description' => esc_html__( 'Enter here your custom CSS classes to apply to the row.', 'helium' ), 
 				'std' => ''
 			)
 		));
@@ -506,7 +532,7 @@ if( ! function_exists( 'helium_separator_shortcode_cb' ) ):
 			'spacer-' . $atts['size'], 
 			$atts['extra_classes']
 		);
-		return '<div class="' . esc_attr( join( ' ', $classes ) ) . '"></div>';
+		return '<div class="' . esc_attr( implode( ' ', $classes ) ) . '"></div>';
 	}
 endif;
 add_filter( 'youxi_shortcode_separator_callback', create_function( '', 'return "helium_separator_shortcode_cb";' ) );
@@ -521,8 +547,8 @@ if( ! function_exists( 'helium_separator_shortcode_atts' ) ):
 		return array_merge( $atts, array(
 			'size' => array(
 				'type' => 'uislider', 
-				'label' => __( 'Separator Size', 'helium' ), 
-				'description' => __( 'Choose the height of the separator.', 'helium' ), 
+				'label' => esc_html__( 'Separator Size', 'helium' ), 
+				'description' => esc_html__( 'Choose the height of the separator.', 'helium' ), 
 				'widgetopts' => array(
 					'min' => 10, 
 					'max' => 140, 
@@ -532,8 +558,8 @@ if( ! function_exists( 'helium_separator_shortcode_atts' ) ):
 			), 
 			'extra_classes' => array(
 				'type' => 'text', 
-				'label' => __( 'Extra CSS Classes', 'helium' ), 
-				'description' => __( 'Enter here your custom CSS classes to apply to the separator.', 'helium' ), 
+				'label' => esc_html__( 'Extra CSS Classes', 'helium' ), 
+				'description' => esc_html__( 'Enter here your custom CSS classes to apply to the separator.', 'helium' ), 
 				'std' => ''
 			)
 		));
@@ -621,21 +647,21 @@ if( ! function_exists( 'helium_team_shortcode_atts' ) ):
 			'social' => array(
 				'type' => 'repeater', 
 				'fieldset' => 'social', 
-				'label' => __( 'Social Profiles', 'helium' ), 
-				'description' => __( 'Specify the social profiles of this team member.', 'helium' ), 
+				'label' => esc_html__( 'Social Profiles', 'helium' ), 
+				'description' => esc_html__( 'Specify the social profiles of this team member.', 'helium' ), 
 				'preview_template' => '{{ data.url }}', 
 				'min' => 0, 
 				'fields' => array(
 					'icon' => array(
 						'type' => 'select', 
-						'label' => __( 'Icon', 'helium' ), 
+						'label' => esc_html__( 'Icon', 'helium' ), 
 						'choices' => helium_socicon_choices(), 
-						'description' => __( 'Choose here the profile icon.', 'helium' )
+						'description' => esc_html__( 'Choose here the profile icon.', 'helium' )
 					), 
 					'url' => array(
 						'type' => 'text', 
-						'label' => __( 'URL', 'helium' ), 
-						'description' => __( 'Enter here the profile URL.', 'helium' )
+						'label' => esc_html__( 'URL', 'helium' ), 
+						'description' => esc_html__( 'Enter here the profile URL.', 'helium' )
 					)
 				), 
 				'serialize' => 'js:function( data ) {
@@ -668,7 +694,7 @@ function helium_team_shortcode_fieldsets( $fieldsets ) {
 	return array_merge( $fieldsets, array(
 		'social' => array(
 			'id' => 'social', 
-			'title' => __( 'Social', 'helium' )
+			'title' => esc_html__( 'Social', 'helium' )
 		)
 	));
 }

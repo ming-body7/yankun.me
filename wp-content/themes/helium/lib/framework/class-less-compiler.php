@@ -1,16 +1,15 @@
-<?php
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Hi there!  I\'m just a plugin, not much I can do when called directly.' );
+<?php if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Cheatin&#8217; uh?' );
 }
 
 /**
  * Youxi LESS Compiler
  *
- * This class caches and compiles LESS files
+ * This class provides the necessary methods to compile LESS files
  *
- * @package   Youxi Themes
+ * @package   Youxi Themes Theme Utils
  * @author    Mairel Theafila <maimairel@yahoo.com>
- * @copyright Copyright (c) 2014, Mairel Theafila
+ * @copyright Copyright (c) 2014-2015, Mairel Theafila
  */
 
 final class Youxi_LESS_Compiler {
@@ -24,7 +23,12 @@ final class Youxi_LESS_Compiler {
 
 	private static $_instance;
 
-	private function __construct() {}
+	private function __construct() {
+		/* Include LESS parser */
+		if( ! class_exists( 'Less_Parser' ) ) {
+			require_once( get_template_directory() . '/lib/vendor/lessphp/less.php' );
+		}
+	}
 
 	public static function get() {
 		if( ! is_a( self::$_instance, get_class() ) ) {
@@ -35,12 +39,6 @@ final class Youxi_LESS_Compiler {
 	}
 
 	private function serialize_vars( $vars ) {
-
-		/* Include LESS parser */
-		if( ! class_exists( 'Less_Parser' ) ) {
-			require( get_template_directory() . '/lib/vendor/less.php/Less.php' );
-		}
-
 		return Less_Parser::serializeVars( $vars );
 	}
 
@@ -52,11 +50,6 @@ final class Youxi_LESS_Compiler {
 				$this->reset_parser( $parser_args );
 			}
 			return $this->_less_parser;
-		}
-
-		/* Include LESS parser */
-		if( ! class_exists( 'Less_Parser' ) ) {
-			require( dirname( __FILE__ ) . '/vendor/less.php/Less.php' );
 		}
 
 		/* Determine parser options */
@@ -106,7 +99,11 @@ final class Youxi_LESS_Compiler {
 		$cache_hash = md5( implode( ',', (array) $less_files ) );
 
 		/* Store the updated cache */
-		$cache[ $cache_hash ] = $updated;
+		if( ! empty( $updated ) ) {
+			$cache[ $cache_hash ] = $updated;
+		} else {
+			unset( $cache[ $cache_hash ] );
+		}
 
 		if( ! add_option( $this->get_cache_key(), $cache, '', 'no' ) ) {
 			update_option( $this->get_cache_key(), $cache );
@@ -126,9 +123,9 @@ final class Youxi_LESS_Compiler {
 		return $hash == $cache[ $key ]['hash'] && is_string( $cache[ $key ]['css'] );
 	}
 
-	public function compile( $less_files, $var_sets ) {
+	public function compile( $less_files, $var_sets, $invalidate = false ) {
 
-		$output = '';
+		global $wp_version;
 
 		/* Get the cache entry for this less file */
 		$cache = $this->read_cache( $less_files );
@@ -139,38 +136,40 @@ final class Youxi_LESS_Compiler {
 			$cache = array();
 		}
 
-		/* $var_sets should be an array of variables! */
+		/* Get files modification time */
+		$hash_suffix = array();
+		foreach( (array) $less_files as $file ) {
+			$filename = trailingslashit( get_template_directory() ) . trim( $file, '/\\' );
+			if( is_readable( $filename ) ) {
+				$hash_suffix[] = filemtime( $filename );
+			}
+		}
+
+		/* Get theme version */
+		$theme     = wp_get_theme();
+		$theme_ver = ( $theme->exists() ? $theme->get( 'Version' ) : 1 );
+
+		$hash_suffix[] = $theme_ver;
+		$hash_suffix[] = $wp_version;
+
+		/* Create hash postfix */
+		$hash_suffix = implode( '_', $hash_suffix );
+
+		/* Prepare output */
+		$output = '';
+		$has_error = false;
 
 		/* Parse and generate the styles */
 		foreach( $var_sets as $vars_key => $vars ) {
 
 			/* Serialize final vars */
-			$serialized_vars = $this->serialize_vars( $vars );
-
-			/*
-				Calculate style hash.
-				Make sure to add WordPress and theme version to the variables hash, 
-				so the styles always get recompiled when updating theme/WordPress.
-			*/
-			$theme     = wp_get_theme();
-			$theme_ver = ( $theme->exists() ? $theme->get( 'Version' ) : 1 );
-			$wp_ver    = get_bloginfo( 'version' );
-
-			/* Get files modification time */
-			$filesmtime = '';
-			foreach( (array) $less_files as $file ) {
-				$filename = trailingslashit( get_template_directory() ) . trim( $file, '/\\' );
-				if( is_readable( $filename ) ) {
-					$filesmtime[] = filemtime( $filename );
-				}
-			}
-			$filesmtime = implode( '_', $filesmtime );
+			$serialized_vars = $this->serialize_vars( $vars );	
 
 			/* Calculate hash from serialized vars, files modification time, theme version and WP version */
-			$vars_hash = md5( implode( '_', array( md5( $serialized_vars ), $filesmtime, $theme_ver, $wp_ver ) ) );
+			$vars_hash = md5( $serialized_vars . '_' . $hash_suffix );
 
 			/* Validate the cache by checking for keys and comparing variable hash */
-			if( ! $this->is_valid_cache( $cache, $vars_key, $vars_hash ) ) {
+			if( $invalidate || ! $this->is_valid_cache( $cache, $vars_key, $vars_hash ) ) {
 
 				/* Get the parser again to also reset it */
 				$parser = $this->get_parser();
@@ -188,12 +187,21 @@ final class Youxi_LESS_Compiler {
 					/* Now parse the variables */
 					/* Remember! http://lesscss.org/features/#variables-feature-default-variables */
 					$parser->parse( $serialized_vars );
+					
+					$css_output = trim( $parser->getCss() );
 
-					/* Store the result in the current cache */
-					$cache[ $vars_key ] = array(
-						'hash' => $vars_hash, 
-						'css'  => $parser->getCss()
-					);
+					if( ! empty( $css_output ) ) {
+
+						/* Store the result in the current cache */
+						$cache[ $vars_key ] = array(
+							'hash' => $vars_hash, 
+							'css'  => $css_output
+						);
+					} else {
+
+						/* Remove empty CSS from cache */
+						unset( $cache[ $vars_key ] );
+					}
 
 					/* We've modified the cache */
 					$cache_modified = true;
@@ -202,6 +210,13 @@ final class Youxi_LESS_Compiler {
 
 					if( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 						error_log( $e->getMessage() );
+					}
+
+					/* Return immediately when an error occured */
+					if( $e instanceof Less_Exception_Parser ) {
+						return new WP_Error( 'less', $e->getMessage(), $e );
+					} else {
+						return new WP_Error();
 					}
 					
 					/* Remove the style in case of errors */

@@ -10,10 +10,10 @@ get_header();
 
 		<div class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 				?><h1 class="content-title">
-					<?php single_term_title( helium_get_option( 'portfolio_archive_page_title' ) . ': ' ); ?>
+					<?php single_term_title( Youxi()->option->get( 'portfolio_archive_page_title' ) . ': ' ); ?>
 				</h1>
 
 			</div>
@@ -127,7 +127,7 @@ get_header();
 				if( 'show_all' != $grid_settings['pagination'] ):
 
 					echo '<div class="grid-list-nav">';
-						helium_posts_pagination( $grid_settings['pagination'] );
+						helium_entry_pagination( $grid_settings['pagination'] );
 					echo '</div>';
 					
 				endif; ?>

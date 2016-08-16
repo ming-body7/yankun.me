@@ -11,22 +11,26 @@ if( have_posts() ) : the_post();
 
 $slider_settings = wp_parse_args( $post->portfolio_slider_settings, array(
 	'posts_per_page' => 5, 
-	'orderby' => 'date', 
-	'order' => 'DESC'
+	'orderby'        => 'date', 
+	'order'          => 'DESC'
 ));
 
+if( 'menu_order' == $slider_settings['orderby'] ) {
+	$slider_settings['order'] = 'ASC';
+}
+
 $featured_posts = get_posts(array(
-	'posts_per_page' => $slider_settings['posts_per_page'], 
-	'post_type' => youxi_portfolio_cpt_name(), 
-	'order' => $slider_settings['order'], 
-	'orderby' => $slider_settings['orderby'], 
+	'posts_per_page'      => $slider_settings['posts_per_page'], 
+	'post_type'           => youxi_portfolio_cpt_name(), 
+	'order'               => $slider_settings['order'], 
+	'orderby'             => $slider_settings['orderby'], 
 	'ignore_sticky_posts' => true, 
-	'suppress_filters' => false, 
-	'no_found_rows' => true, 
-	'meta_query' => array(
+	'suppress_filters'    => false, 
+	'no_found_rows'       => true, 
+	'meta_query'          => array(
 		array(
-			'key' => 'featured', 
-			'value' => 1, 
+			'key'     => 'featured', 
+			'value'   => 1, 
 			'compare' => '='
 		)
 	)
@@ -40,7 +44,7 @@ get_header();
 
 		<div class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 				the_title( '<h1 class="content-title">', '</h1>' ); ?>
 
@@ -79,9 +83,8 @@ get_header();
 
 					</figcaption>
 
-					<?php if( has_post_thumbnail() ): 
-
-					?><div class="rsImg"><?php echo wp_get_attachment_url( get_post_thumbnail_id() ) ?></div>
+					<?php if( has_post_thumbnail() ) : ?>
+					<a class="rsImg" href="<?php echo esc_url( wp_get_attachment_url( get_post_thumbnail_id() ) ) ?>"></a>
 					<?php endif; ?>
 
 				</figure>

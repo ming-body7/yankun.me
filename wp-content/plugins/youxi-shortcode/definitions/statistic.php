@@ -56,6 +56,7 @@ function define_statistic_shortcodes( $manager ) {
 		'label' => __( 'Counter', 'youxi' ), 
 		'category' => 'statistic', 
 		'priority' => 10, 
+		'icon' => 'fa fa-clock-o', 
 		'insert_nl' => false, 
 		'atts' => array(
 			'label' => array(
@@ -84,6 +85,7 @@ function define_statistic_shortcodes( $manager ) {
 		'label' => __( 'Progressbar', 'youxi' ), 
 		'category' => 'statistic', 
 		'priority' => 20, 
+		'icon' => 'fa fa-tasks', 
 		'atts' => array(
 			'type' => array(
 				'type' => 'select', 

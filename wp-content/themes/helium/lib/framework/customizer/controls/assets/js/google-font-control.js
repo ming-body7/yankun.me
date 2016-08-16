@@ -1,73 +1,102 @@
 
 ;(function( wp, $ ) {
 
-	var api = wp.customize
+	"use strict";
+
+	var api = wp.customize, 
+		Fonts = _youxiCustomizeGoogleFonts || {};
+
 	if( api ) {
 
 		api.Youxi = api.Youxi || {};
+
 		api.Youxi.GoogleFontControl = api.Control.extend({
 
+			createOption: function( variant ) {
+				return $( '<option />' ).attr( 'value', variant ).text( variant );
+			}, 
+
+			createCheckbox: function( subset ) {
+				return $( '<label />' ).html( '<input type="checkbox" value="' + subset + '">' + subset + '<br>' );
+			}, 
+
 			getValue: function() {
-				var value = [], 
-					family = this.familyDropdown.val(), 
-					variant = this.variantDropdown.val();
+
+				var control = this, 
+					value = [], 
+					family = control.family.val(), 
+					variant = control.variant.val(), 
+					subsets = control.subsets.find( ':checkbox:checked' ).map(function() {
+						return this.value;
+					}).get();
 
 				if( family ) {
+
 					value.push( family );
 					if( variant ) {
 						value.push( variant );
 					}
+
+					subsets = subsets.length ? '&subset=' + subsets.join( ',' ) : '';
+
+					return value.join( ':' ) + subsets;
 				}
 
-				return value.join( ':' );
+				return '';
 			}, 
 
-			updateVariants: function( family, value ) {
-				var font;
-				if( font = api.Youxi.GoogleFontControl.Fonts[ family ] ) {
+			updateVariants: function( family ) {
 
-					this.variantDropdown.prop( 'disabled', false );
-					this.variantDropdown.children().first().nextAll().remove();
-					this.variantDropdown.append( $.map( font.variants || [], function( variant ) {
-						return $( '<option></option>' ).attr({
-							value: variant
-						}).text( variant );
-					})).val( value );
+				var control = this, t;
 
-				} else {
-					this.variantDropdown.val( '' ).prop( 'disabled', true );
-					this.setting.set( '' );
+				control.variant.children().first().nextAll().remove();
+
+				if( t = !! ( family && Fonts[ family ] ) ) {
+					control.variant.append( _.map( Fonts[ family ].variants || [], control.createOption ) );
 				}
+				control.variant.prop( 'disabled', ! t ).toggle( t );
 			}, 
 
-			updateValue: function() {
-				this.setting.set( this.getValue() );
+			updateSubsets: function( family ) {
+
+				var control = this, t;
+
+				control.subsets.empty();
+
+				if( t = !! ( family && Fonts[ family ] ) ) {
+					control.subsets.html( _.map( Fonts[ family ].subsets || [], control.createCheckbox ) );
+				}
+				control.subsets.toggle( t );
 			}, 
 
 			ready: function() {
-				this.familyDropdown = this.container.find( '.youxi-google-font-family' ), 
-				this.variantDropdown = this.container.find( '.youxi-google-font-variant' );
 
-				var control = this, 
-					setting = this.setting().toString().split( ':' );
+				var control = this;
 
-				if( setting.length > 0 ) {
-					this.familyDropdown.val( setting[0] );
-					this.updateVariants( setting[0], setting.length > 1 ? setting[1] : '' );
-					this.updateValue();
-				}
+				control.family  = control.container.find( '.youxi-google-font-family' );
+				control.variant = control.container.find( '.youxi-google-font-variant' );
+				control.subsets = control.container.find( '.youxi-google-font-subsets' );
 
-				this.familyDropdown.on( 'change', function() {
-					control.updateVariants( this.value );
-					control.updateValue();
+				control.dropdowns = control.family.add( control.variant );
+
+				control.family.on( 'change', function() {
+					if( control.currentFamily != this.value ) {
+						control.currentFamily = this.value;
+						control.updateVariants( this.value );
+						control.updateSubsets( this.value );
+					}
 				});
-				this.variantDropdown.on( 'change', function() {
-					control.updateValue();
+
+				control.dropdowns.on( 'change', function() {
+					control.setting.set( control.getValue() );
+				});
+
+				control.subsets.on( 'change', ':checkbox', function() {
+					control.setting.set( control.getValue() );
 				});
 			}
-		}, {
-			Fonts: _youxiCustomizeGoogleFonts || {}
-		});
+
+		}, { Fonts: Fonts } );
 
 		$.extend( api.controlConstructor, { youxi_google_font: api.Youxi.GoogleFontControl });
 	}

@@ -3,12 +3,55 @@
 Plugin Name: Youxi Widgets
 Plugin URI: http://www.themeforest.net/user/nagaemas
 Description: This plugin provides a set of commonly used widgets whose output can be dynamically customized with templates and filters. The widgets are also able to detect the widget area it's located on, making it possible to output different layouts on different widget areas.
-Version: 1.2.4
+Version: 1.5.3
 Author: YouxiThemes
 Author URI: http://www.themeforest.net/user/nagaemas
 License: Envato Marketplace Licence
 
 Changelog:
+1.5.3 - 15/12/2015
+- NEW: Since v1.5.3, WordPress 4.4+ is required
+- Fix: Bug on Posts widget that prevents saving of the tags
+- Improvement: Tweak instagram API class
+- Improvement: Code changes on repeatable fields for WordPress 4.4
+
+1.5.2 - 14/08/2015
+- Improvement: Add image size attribute to Instagram widget
+- Improvement: Add image size attribute to Flickr widget
+
+1.5.1 - 19/07/2015
+- Improvement: When using WordPress 4.2+, do not strip Emoji characters from Instagram
+- Improvement: Modify jflickrfeed to make possible displaying all Flickr image sizes
+- Improvement: Modify default Flickr config to display `image_q`
+
+1.5  - 07/07/2015
+- NEW: Added posts widget orderby option, filterable through `youxi_widgets_posts-widget_orderby_choices`
+- NEW: Added posts widget meta display option, filterable through `youxi_widgets_posts-widget_meta_display_choices`
+- NEW: Added posts widget layout option, filterable through `youxi_widgets_posts-widget_layout_choices`
+- Improvement: Added image size check on instagram widget
+- Improvement: Refactor plugin compatibility code into plugin-compatibility.php
+
+1.4 - 24/05/2015
+- Improvement: Replace rotating quotes widget script with a simple built in jQuery script
+- Improvement: Refactor the code to get instagram feed to its own class
+- Improvement: Prefix all widget classnames with `youxi-`
+- Improvement: Change exclude criteria of post category/tags to include on the posts widget
+- Fix: Instagram bug displaying another feed with similar username
+
+1.3 - 21/04/2015
+- Rewrite widgets frontend script, introduce `$.Youxi.Widgets.setup` and `$.Youxi.Widgets.teardown` methods
+- Replace rotating quotes widget Quovolver plugin with Cycle2
+- Fix a bug causing all widget scripts to be loaded even when it's inactive
+- Fix a bug on instagram widget overriding the wrong base class method
+- Remove the deprecated Video Widget `class-widget-video.php` file
+
+1.2.6 - 10/03/2015
+- Fix a bug on the instagram widget that causes multiple widgets on the same page to break
+
+1.2.5 - 31/01/2015
+- Added image size option for instagram widget
+- Make sure instagram widget pulls images through the same HTTP protocol
+
 1.2.4 - 16/12/2014
 - Added `Open links in a new window/tab` option on Social Widget
 - Refactor Social Widget
@@ -65,7 +108,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Hi there!  I\'m just a plugin, not much I can do when called directly.' );
 }
 
-define( 'YOUXI_WIDGETS_VERSION', '1.2' );
+define( 'YOUXI_WIDGETS_VERSION', '1.5.3' );
 
 define( 'YOUXI_WIDGETS_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -73,18 +116,9 @@ define( 'YOUXI_WIDGETS_URL', plugin_dir_url( __FILE__ ) );
 
 define( 'YOUXI_WIDGETS_LANG_DIR', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
-if( is_admin() ) {
-	require( YOUXI_WIDGETS_DIR . 'admin/admin.php' );
-}
-
 function youxi_widgets_init() {
 
 	require( YOUXI_WIDGETS_DIR . 'class-widget-base.php' );
-
-	/* WPML compatibility */
-	if( function_exists( 'icl_register_string' ) ) {
-		require( YOUXI_WIDGETS_DIR . 'admin/wpml.php' );
-	}
 
 	if( apply_filters( 'youxi_widgets_use_flickr', true ) ) {
 		if( ! class_exists( 'Youxi_Flickr_Widget' ) ) {
@@ -148,19 +182,29 @@ function youxi_widgets_init() {
 		}
 		register_widget( 'Youxi_Twitter_Widget' );
 	}
-
-	if( apply_filters( 'youxi_widgets_use_video', true ) ) {
-		if( ! class_exists( 'Youxi_Video_Widget' ) ) {
-			require( YOUXI_WIDGETS_DIR . 'class-widget-video.php' );
-		}
-		register_widget( 'Youxi_Video_Widget' );
-	}
 }
-add_action( 'widgets_init', 'youxi_widgets_init' );
 
-function youxi_widgets_plugins_loaded() {
+function youxi_widgets_includes() {
+
+	global $wp_version;
+
+	if( version_compare( $wp_version, '4.4', '<' ) ) {
+
+		if( ! class_exists( 'Youxi_Admin_Notice' ) ) {
+			require( plugin_dir_path( __FILE__ ) . 'class-admin-notice.php' );
+		}
+		Youxi_Admin_Notice::instance()->add_error( __FILE__, __( 'The current version of this plugin requires at least WordPress 4.4.', 'youxi' ) );
+		return;
+	}
 
 	/* Load Language File */
 	load_plugin_textdomain( 'youxi', false, YOUXI_WIDGETS_LANG_DIR );
+
+	if( is_admin() ) {
+		require( YOUXI_WIDGETS_DIR . 'admin/admin.php' );
+	}
+	require( YOUXI_WIDGETS_DIR . 'plugin-compatibility.php' );
+
+	add_action( 'widgets_init', 'youxi_widgets_init' );
 }
-add_action( 'plugins_loaded', 'youxi_widgets_plugins_loaded' );
+add_action( 'plugins_loaded', 'youxi_widgets_includes' );

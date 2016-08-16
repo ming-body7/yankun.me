@@ -3,12 +3,21 @@
 Plugin Name: Youxi Post Format
 Plugin URI: http://www.themeforest.net/user/nagaemas
 Description: This plugin extends WordPress blog posts with very customizable post format related content.
-Version: 1.1
+Version: 1.2
 Author: YouxiThemes
 Author URI: http://www.themeforest.net/user/nagaemas
 License: Envato Marketplace Licence
 
 Changelog:
+1.2 - 12/12/2015
+- Utilize only WordPress oEmbed feature, changed the audio and video `Embed Code` field to `Embed URL`. 
+
+1.1.2 - 12/03/2015
+- Updated translation files
+
+1.1.1 - 09/03/2015
+- Use the gallery form field for gallery post type
+
 1.1 - 07/11/2014
 - Rename post format meta keys
 - Added wpml-config.xml
@@ -31,7 +40,7 @@ function youxi_post_format_plugins_loaded() {
 		return;
 	}
 
-	define( 'YOUXI_POST_FORMAT_VERSION', '1.1' );
+	define( 'YOUXI_POST_FORMAT_VERSION', '1.2' );
 
 	define( 'YOUXI_POST_FORMAT_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -117,9 +126,9 @@ function youxi_post_format_video_metabox() {
 				'std' => 'hosted'
 			), 
 			'embed' => array(
-				'type' => 'textarea', 
-				'label' => __( 'Embed Code', 'youxi' ), 
-				'description' => __( 'Enter here the video embed code for this post.', 'youxi' ), 
+				'type' => 'text', 
+				'label' => __( 'Embed URL', 'youxi' ), 
+				'description' => __( 'Enter your embeddable video URL. This functionality utilizes WordPress oEmbed feature. See the following site to get a list of available embeds: https://codex.wordpress.org/Embeds', 'youxi' ), 
 				'std' => '', 
 				'criteria' => 'type:is(embed)'
 			), 
@@ -160,9 +169,9 @@ function youxi_post_format_audio_metabox() {
 				'std' => 'hosted'
 			), 
 			'embed' => array(
-				'type' => 'textarea', 
-				'label' => __( 'Embed Code', 'youxi' ), 
-				'description' => __( 'Enter here the audio embed code for this post.', 'youxi' ), 
+				'type' => 'text', 
+				'label' => __( 'Embed URL', 'youxi' ), 
+				'description' => __( 'Enter your embeddable audio URL. This functionality utilizes WordPress oEmbed feature. See the following site to get a list of available embeds: https://codex.wordpress.org/Embeds', 'youxi' ), 
 				'std' => '', 
 				'criteria' => 'type:is(embed)'
 			), 
@@ -219,7 +228,7 @@ function youxi_post_format_gallery_metabox() {
 		'title' => __( 'Post Format: Gallery', 'youxi' ), 
 		'fields' => array(
 			'images' => array(
-				'type' => 'image', 
+				'type' => version_compare( YOUXI_CORE_VERSION, '1.4', '<' ) ? 'image' : 'gallery', 
 				'multiple' => true, 
 				'label' => __( 'Images', 'youxi' ), 
 				'description' => __( 'Upload here the gallery images to use for this post.', 'youxi' )

@@ -4,8 +4,8 @@
  * This script handles every form's initialization.
  *
  * @package   Youxi Core
- * @author    Mairel Theafila <maimairel@yahoo.com>
- * @copyright Copyright (c) 2013, Mairel Theafila
+ * @author    Mairel Theafila <maimairel@gmail.com>
+ * @copyright Copyright (c) 2013-2015, Mairel Theafila
  */
 ;(function( $, window, document, undefined ) {
 
@@ -94,8 +94,13 @@
 					var passed;
 					var currentScope = $( this ).data( 'field-scope' );
 
-					var criterias = $.Youxi.Form.parseCriteria( $( this ).data( 'criteria' ) );
+					var criterias = $( this ).data( 'criteria-cache' );
 					var operator  = ( $( this ).data( 'criteria-operator' ) || 'and' ).toLowerCase();
+
+					if( ! criterias ) {
+						criterias = $.Youxi.Form.parseCriteria( $( this ).data( 'criteria' ) );
+						$( this ).data( 'criteria-cache', criterias );
+					}
 
 					$.each( criterias, function( index, criteria ) {
 
@@ -157,6 +162,7 @@
 					$( this )
 						.toggle( passed )
 						.find( ':input' )
+							.not( '.skip-criteria-check' )
 							.attr( 'disabled', ! passed );
 				});
 			}

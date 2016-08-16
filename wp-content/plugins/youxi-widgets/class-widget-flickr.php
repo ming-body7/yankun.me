@@ -7,7 +7,7 @@ class Youxi_Flickr_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'flickr-widget', 'description' => __( 'Use this widget to display your Flickr feed.', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-flickr-widget', 'description' => __( 'Use this widget to display your Flickr feed.', 'youxi' ) );
 		$control_opts = array();
 
 		// Initialize WP_Widget
@@ -19,9 +19,9 @@ class Youxi_Flickr_Widget extends Youxi_WP_Widget {
 		extract( $args, EXTR_SKIP );
 
 		$instance = wp_parse_args( (array) $instance, array(
-			'title'     =>'', 
-			'flickr_id' =>'', 
-			'limit'     =>8
+			'title'     => '', 
+			'flickr_id' => '', 
+			'limit'     => 8
 		) );
 
 		$instance = apply_filters( "youxi_widgets_{$this->id_base}_instance", $instance, $this->id );
@@ -86,10 +86,10 @@ class Youxi_Flickr_Widget extends Youxi_WP_Widget {
 
 	public function get_defaults() {
 
-		$widget_name = preg_replace( array( '/\W/', '/_?widget_?/' ), '', $this->id_base );
+		$widget_name = preg_replace( array('/\W/', '/_?widget_?/' ), '', $this->id_base );
 				
 		return apply_filters( "youxi_widgets_{$widget_name}_defaults", array(
-			'itemTemplate' => '<li><a href="{{link}}" title="{{title}}" target="_blank"><img src="{{image_s}}" alt="{{title}}"></a></li>'
+			'itemTemplate' => '<li><a href="{{link}}" title="{{title}}" target="_blank"><img width="150" height="150" src="{{image_q}}" alt="{{title}}"></a></li>'
 		));
 	}
 }

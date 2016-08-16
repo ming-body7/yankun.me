@@ -17,22 +17,22 @@ if( ! function_exists( 'helium_add_page_metabox' ) ) {
 
 		/* Layout */
 		$metaboxes['layout'] = array(
-			'title' => __( 'Layout', 'helium' ), 
+			'title' => esc_html__( 'Layout', 'helium' ), 
 			'fields' => array(
 				'page_layout' => array(
 					'type' => 'select', 
-					'label' => __( 'Page Layout', 'helium' ), 
-					'description' => __( 'Specify the layout of the page (does not have any effect on custom page templates).', 'helium' ), 
+					'label' => esc_html__( 'Page Layout', 'helium' ), 
+					'description' => esc_html__( 'Specify the layout of the page (does not have any effect on custom page templates).', 'helium' ), 
 					'choices' => array(
-						'fullwidth' => __( 'Fullwidth', 'helium' ), 
-						'boxed' => __( 'Boxed', 'helium' )
+						'fullwidth' => esc_html__( 'Fullwidth', 'helium' ), 
+						'boxed' => esc_html__( 'Boxed', 'helium' )
 					), 
 					'std' => 'boxed'
 				), 
 				'wrap_content' => array(
 					'type' => 'switch', 
-					'label' => __( 'Wrap Content', 'helium' ), 
-					'description' => __( 'Switch to automatically wrap the post content inside a container. Switch off to use advanced row layouts.', 'helium' ), 
+					'label' => esc_html__( 'Wrap Content', 'helium' ), 
+					'description' => esc_html__( 'Switch to automatically wrap the post content inside a container. Switch off to use advanced row layouts.', 'helium' ), 
 					'std' => true
 				)
 			)

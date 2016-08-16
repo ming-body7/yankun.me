@@ -9,7 +9,7 @@ class Youxi_Instagram_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'instagram-widget', 'description' => __( 'Use this widget to display your Instagram feed.', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-instagram-widget', 'description' => __( 'Use this widget to display your Instagram feed.', 'youxi' ) );
 		$control_opts = array();
 
 		// Initialize WP_Widget
@@ -17,7 +17,7 @@ class Youxi_Instagram_Widget extends Youxi_WP_Widget {
 
 		if( ! self::$ajax_hook_registered ) {
 
-			$ajax_action = apply_filters( 'youxi_widgets_instagram_ajax_action', 'youxi_get_instafeed' );
+			$ajax_action = apply_filters( 'youxi_widgets_instagram_ajax_action', 'youxi_widgets_get_instagram_feed' );
 
 			if( ! has_action( "wp_ajax_{$ajax_action}"  ) ) {
 				add_action( "wp_ajax_{$ajax_action}", array( 'Youxi_Instagram_Widget', 'get_feed' ) );
@@ -89,97 +89,35 @@ class Youxi_Instagram_Widget extends Youxi_WP_Widget {
 		return apply_filters( "youxi_widgets_{$this->id_base}_new_instance", $instance, $this->id );
 	}
 
-	public function config_vars( $vars ) {
-
-		$vars = parent::config_vars( $vars );
+	public function get_defaults() {
 
 		$widget_name = preg_replace( array( '/\W/', '/_?widget_?/' ), '', $this->id_base );
-		if( isset( $vars[ $widget_name ] ) ) {
-			$vars[ $widget_name ] = array_merge( $vars[ $widget_name ], array(
-				'ajaxAction' => apply_filters( 'youxi_widgets_instagram_ajax_action', 'youxi_get_instafeed' )
-			));
-		}
-
-		return $vars;
-	}
-
-	public static function sanitize( &$value, $key ) {
-
-		if( preg_match( '/^(text|full_name|bio)$/', $key ) ) {
-			$value = preg_replace( '/([0-9|#][\x{20E3}])|[\x{00ae}|\x{00a9}|\x{203C}|\x{2047}|\x{2048}|\x{2049}|\x{3030}|\x{303D}|\x{2139}|\x{2122}|\x{3297}|\x{3299}][\x{FE00}-\x{FEFF}]?|[\x{2190}-\x{21FF}][\x{FE00}-\x{FEFF}]?|[\x{2300}-\x{23FF}][\x{FE00}-\x{FEFF}]?|[\x{2460}-\x{24FF}][\x{FE00}-\x{FEFF}]?|[\x{25A0}-\x{25FF}][\x{FE00}-\x{FEFF}]?|[\x{2600}-\x{27BF}][\x{FE00}-\x{FEFF}]?|[\x{2900}-\x{297F}][\x{FE00}-\x{FEFF}]?|[\x{2B00}-\x{2BF0}][\x{FE00}-\x{FEFF}]?|[\x{1F000}-\x{1F6FF}][\x{FE00}-\x{FEFF}]?/u', '', $value );
-		}
+				
+		return apply_filters( "youxi_widgets_{$widget_name}_defaults", array(
+			'ajaxAction' => apply_filters( 'youxi_widgets_instagram_ajax_action', 'youxi_widgets_get_instagram_feed' )
+		));
 	}
 
 	public static function get_feed() {
 
 		if( isset( $_REQUEST['instagram'] ) ) {
 
-			extract( wp_parse_args( $_REQUEST['instagram'], array(
-				'username'  => '', 
-				'count'     => 8, 
-				'client_id' => apply_filters( 'youxi_widgets_instagram_client_id', '48105b2c76194d68bc02cc2d2e19822a' )
-			)));
-
-			$cache_key = apply_filters( 'youxi_instagram_transient_prefix', 'youxi_instagram_' ) . $username;
-
-			// Try reading from cache first
-			$data = get_transient( $cache_key );
-
-			// If the cache is invalid, we'll make an API request
-			if( ! is_array( $data ) ) {
-
-				// Get a user by user id
-				$url = 'https://api.instagram.com/v1/users/search';
-				$url = add_query_arg( array( 'q' => $username, 'client_id' => $client_id, 'count' => 1 ), $url );
-
-				$response = wp_remote_get( $url, array(
-					'timeout' => 10, 
-					'sslverify' => false
-				));
-
-				if( 200 == wp_remote_retrieve_response_code( $response ) ) {
-
-					$body = wp_remote_retrieve_body( $response );
-					$body = json_decode( $body, true );
-
-					if( ! is_null( $body ) && isset( $body['data'], $body['data'][0], $body['data'][0]['id'] ) ) {
-						
-						$url = 'https://api.instagram.com/v1/users/' . $body['data'][0]['id'] . '/media/recent';
-						$url = add_query_arg( array( 'count' => $count, 'client_id' => $client_id ), $url );
-
-						$response = wp_remote_get( $url, array(
-							'timeout' => 10, 
-							'sslverify' => false
-						));
-
-						if( 200 == wp_remote_retrieve_response_code( $response ) ) {
-
-							$body = wp_remote_retrieve_body( $response );
-							$body = json_decode( $body, true );
-
-							if( ! is_null( $body ) && isset( $body['data'] ) ) {
-								
-								$data = $body['data'];
-								array_walk_recursive( $data, array( get_class(), 'sanitize' ) );
-								set_transient( $cache_key, $data, HOUR_IN_SECONDS );
-
-								wp_send_json_success( $data );
-							}
-						}
-					} else {
-						wp_send_json_error( array( 'error_message' => __( 'The username ' . $username . ' is invalid.' ) ) );
-					}
-				}
-
-				$body = wp_remote_retrieve_body( $response );
-				$body = json_decode( $body, true );
-				if( isset( $body['meta'], $body['meta']['error_message'] ) ) {
-					wp_send_json_error( $body['meta'] );
-				}
-
-			} else {
-				wp_send_json_success( $data );
+			if( ! class_exists( 'Youxi_Instagram' ) ) {
+				require( YOUXI_WIDGETS_DIR . 'api/instagram/class-youxi-instagram.php' );
 			}
+
+			$request = wp_parse_args( $_REQUEST['instagram'], array( 'username'  => '', 'count' => 8 ) );
+			$feed = Youxi_Instagram::get( $request['username'], $request['count'] );
+
+			if( is_wp_error( $feed ) ) {
+				wp_send_json_error(array(
+					'error_code'    => $feed->get_error_code(), 
+					'error_message' => $feed->get_error_message(), 
+					'error_data'    => $feed->get_error_data()
+				));
+			}
+
+			wp_send_json_success( $feed );
 		}
 
 		wp_send_json_error();

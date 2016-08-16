@@ -1,6 +1,8 @@
 
 ;(function( wp, $ ) {
 
+	"use strict";
+
 	var api = wp.customize;
 	if( api ) {
 

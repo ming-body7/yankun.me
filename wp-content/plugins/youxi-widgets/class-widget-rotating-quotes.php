@@ -7,7 +7,7 @@ class Youxi_Rotating_Quotes_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'rotating-quotes-widget', 'description' => __( 'Use this widget to display a set of rotating quotes.', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-rotating-quotes-widget', 'description' => __( 'Use this widget to display a set of rotating quotes.', 'youxi' ) );
 		$control_opts = array( 'width' => '400px' );
 
 		// Initialize WP_Widget
@@ -91,27 +91,6 @@ class Youxi_Rotating_Quotes_Widget extends Youxi_WP_Widget {
 		return apply_filters( "youxi_widgets_{$this->id_base}_new_instance", $instance, $this->id );
 	}
 
-	public function enqueue() {
-
-		if( parent::enqueue() ) {
-
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-			if( ! wp_script_is( 'quovolver' ) ) {
-				wp_enqueue_script( 'quovolver', self::frontend_plugins_url( "quovolver/jquery.quovolver{$suffix}.js" ), array( 'jquery' ), '2.0.2', true );
-			}
-		}
-	}
-
-	public function get_defaults() {
-
-		$widget_name = preg_replace( array( '/\W/', '/_?widget_?/' ), '', $this->id_base );
-		
-		return apply_filters( "youxi_widgets_{$widget_name}_defaults", array(
-			'equalHeight' => true
-		));
-	}
-
 	protected function get_template( $index = '{{ data.index }}', $values = array() ) {
 		$values = wp_parse_args( $values, array(
 			'text' => '', 
@@ -134,22 +113,22 @@ class Youxi_Rotating_Quotes_Widget extends Youxi_WP_Widget {
 			<tr>
 				<td colspan="2">
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( "quotes-$index-text" ) ) ?>"><?php _e( 'Text', 'youxi' ) ?>:</label>
-						<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( "quotes-$index-text" ) ) ?>" rows="4" name="<?php echo esc_attr( $this->get_field_name( "quotes][$index][text" ) ) ?>"><?php echo esc_textarea( $values['text'] ) ?></textarea>
+						<label for="<?php echo esc_attr( $this->get_field_id( "quotes[$index][text]" ) ) ?>"><?php _e( 'Text', 'youxi' ) ?>:</label>
+						<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( "quotes[$index][text]" ) ) ?>" rows="4" name="<?php echo esc_attr( $this->get_field_name( "quotes[$index][text]" ) ) ?>"><?php echo esc_textarea( $values['text'] ) ?></textarea>
 					</p>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( "quotes-$index-author" ) ) ?>"><?php _e( 'Author', 'youxi' ) ?>:</label>
-						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "quotes-$index-author" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "quotes][$index][author" ) ) ?>" type="text" value="<?php echo esc_attr( $values['author'] ) ?>">
+						<label for="<?php echo esc_attr( $this->get_field_id( "quotes[$index][author]" ) ) ?>"><?php _e( 'Author', 'youxi' ) ?>:</label>
+						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "quotes[$index][author]" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "quotes[$index][author]" ) ) ?>" type="text" value="<?php echo esc_attr( $values['author'] ) ?>">
 					</p>
 				</td>
 				<td>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( "quotes-$index-source" ) ) ?>"><?php _e( 'Source', 'youxi' ) ?>:</label>
-						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "quotes-$index-source" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "quotes][$index][source" ) ) ?>" type="text" value="<?php echo esc_attr( $values['source'] ) ?>">
+						<label for="<?php echo esc_attr( $this->get_field_id( "quotes[$index][source]" ) ) ?>"><?php _e( 'Source', 'youxi' ) ?>:</label>
+						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "quotes[$index][source]" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "quotes[$index][source]" ) ) ?>" type="text" value="<?php echo esc_attr( $values['source'] ) ?>">
 					</p>
 				</td>
 			</tr>

@@ -7,7 +7,7 @@ class Youxi_Recent_Posts_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'recent-posts-widget', 'description' => __( 'Use this widget to display your recent posts', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-recent-posts-widget', 'description' => __( 'Use this widget to display your recent posts', 'youxi' ) );
 		$control_opts = array();
 
 		// Initialize WP_Widget

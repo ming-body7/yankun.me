@@ -13,86 +13,86 @@ function helium_youxi_post_format_gallery_metabox( $metabox ) {
 		$metabox['fields'] = array_merge( array(
 			'type' => array(
 				'type' => 'radio', 
-				'label' => __( 'Gallery Type', 'helium' ), 
-				'description' => __( 'Choose the gallery type for this post.', 'helium' ), 
+				'label' => esc_html__( 'Gallery Type', 'helium' ), 
+				'description' => esc_html__( 'Choose the gallery type for this post.', 'helium' ), 
 				'choices' => array(
-					'slider' => __( 'Slider', 'helium' ), 
-					'justified' => __( 'Justified Gallery', 'helium' )
+					'slider' => esc_html__( 'Slider', 'helium' ), 
+					'justified' => esc_html__( 'Justified Gallery', 'helium' )
 				), 
 				'std' => 'slider'
 			), 
 			'autoHeight' => array(
 				'type' => 'switch', 
-				'label' => __( 'Slider: Auto Height', 'helium' ), 
-				'description' => __( 'Switch to automatically update slider height based on each slide.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Auto Height', 'helium' ), 
+				'description' => esc_html__( 'Switch to automatically update slider height based on each slide.', 'helium' ), 
 				'std' => true, 
 				'criteria' => 'type:is(slider)'
 			), 
 			'autoScaleSliderRatio' => array(
 				'type' => 'aspect-ratio', 
-				'label' => __( 'Slider: Aspect Ratio', 'helium' ), 
-				'description' => __( 'Specify the slider aspect ratio when auto height is disabled.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Aspect Ratio', 'helium' ), 
+				'description' => esc_html__( 'Specify the slider aspect ratio when auto height is disabled.', 'helium' ), 
 				'std' => array( 'width' => 4, 'height' => 3 ), 
 				'criteria' => 'type:is(slider),autoHeight:is(0)'
 			), 
 			'imageScaleMode' => array(
 				'type' => 'select', 
-				'label' => __( 'Slider: Image Scale Mode', 'helium' ), 
-				'description' => __( 'Specify the slider image scaling mode.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Image Scale Mode', 'helium' ), 
+				'description' => esc_html__( 'Specify the slider image scaling mode.', 'helium' ), 
 				'choices' => array(
-					'fill' => __( 'Fill', 'helium' ), 
-					'fit' => __( 'Fit', 'helium' )
+					'fill' => esc_html__( 'Fill', 'helium' ), 
+					'fit' => esc_html__( 'Fit', 'helium' )
 				), 
 				'std' => 'fill', 
 				'criteria' => 'type:is(slider),autoHeight:is(0)'
 			), 
 			'controlNavigation' => array(
 				'type' => 'switch', 
-				'label' => __( 'Slider: Navigation Bullets', 'helium' ), 
-				'description' => __( 'Switch to toggle the slider navigation bullets.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Navigation Bullets', 'helium' ), 
+				'description' => esc_html__( 'Switch to toggle the slider navigation bullets.', 'helium' ), 
 				'std' => true, 
 				'criteria' => 'type:is(slider)'
 			), 
 			'arrowsNav' => array(
 				'type' => 'switch', 
-				'label' => __( 'Slider: Navigation Arrows', 'helium' ), 
-				'description' => __( 'Switch to toggle the slider navigation arrows.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Navigation Arrows', 'helium' ), 
+				'description' => esc_html__( 'Switch to toggle the slider navigation arrows.', 'helium' ), 
 				'std' => true, 
 				'criteria' => 'type:is(slider)'
 			), 
 			'loop' => array(
 				'type' => 'switch', 
-				'label' => __( 'Slider: Loop', 'helium' ), 
-				'description' => __( 'Switch to allow the slider to go to the first from the last slide.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Loop', 'helium' ), 
+				'description' => esc_html__( 'Switch to allow the slider to go to the first from the last slide.', 'helium' ), 
 				'std' => false, 
 				'criteria' => 'type:is(slider)'
 			), 
 			'slidesOrientation' => array(
 				'type' => 'select', 
-				'label' => __( 'Slider: Orientation', 'helium' ), 
-				'description' => __( 'Specify the slider orientation.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Orientation', 'helium' ), 
+				'description' => esc_html__( 'Specify the slider orientation.', 'helium' ), 
 				'choices' => array(
-					'vertical' => __( 'Vertical', 'helium' ), 
-					'horizontal' => __( 'Horizontal', 'helium' )
+					'vertical' => esc_html__( 'Vertical', 'helium' ), 
+					'horizontal' => esc_html__( 'Horizontal', 'helium' )
 				), 
 				'std' => 'horizontal', 
 				'criteria' => 'type:is(slider),autoHeight:is(0)'
 			), 
 			'transitionType' => array(
 				'type' => 'select', 
-				'label' => __( 'Slider: Transition Type', 'helium' ), 
-				'description' => __( 'Specify the slider transition type.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Transition Type', 'helium' ), 
+				'description' => esc_html__( 'Specify the slider transition type.', 'helium' ), 
 				'choices' => array(
-					'move' => __( 'Move', 'helium' ), 
-					'fade' => __( 'Fade', 'helium' )
+					'move' => esc_html__( 'Move', 'helium' ), 
+					'fade' => esc_html__( 'Fade', 'helium' )
 				), 
 				'std' => 'move', 
 				'criteria' => 'type:is(slider)'
 			), 
 			'transitionSpeed' => array(
 				'type' => 'uislider', 
-				'label' => __( 'Slider: Transition Speed', 'helium' ), 
-				'description' => __( 'Specify the slider transition speed.', 'helium' ), 
+				'label' => esc_html__( 'Slider: Transition Speed', 'helium' ), 
+				'description' => esc_html__( 'Specify the slider transition speed.', 'helium' ), 
 				'widgetopts' => array(
 					'min' => 100, 
 					'max' => 5000, 

@@ -19,7 +19,7 @@ if(  is_post_type_archive( 'download' ) ) {
 	$grid_settings['include'] = array();
 
 	/* Get default archive title */
-	$the_title = helium_get_option( 'edd_archive_page_title' );
+	$the_title = Youxi()->option->get( 'edd_archive_page_title' );
 
 	$the_query = $wp_query;
 
@@ -60,7 +60,7 @@ if(  is_post_type_archive( 'download' ) ) {
 		);
 
 		/* Clean the excludes from empty values */
-		$grid_settings['include'] = array_filter( $grid_settings['include'] );
+		$grid_settings['include'] = array_filter( (array) $grid_settings['include'] );
 
 		if( $grid_settings['include'] ) {
 			$_query['tax_query'] = array(
@@ -96,7 +96,7 @@ $wp_query = $the_query;
 
 		<div class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 				?><h1 class="content-title">
 					<?php echo $the_title; ?>
@@ -143,13 +143,13 @@ $wp_query = $the_query;
 					if( $terms && count( $terms ) > 1 ):
 
 					?><div class="grid-list-filter">
-						<span class="filter-label"><?php esc_html_e( 'Filter', 'youxi' ); ?></span><?php
+						<span class="filter-label"><?php esc_html_e( 'Filter', 'helium' ); ?></span><?php
 
-						?><ul class="filter-items"><?php
+						?><ul class="filter-items plain-list"><?php
 
 							?><li>
 								<a href="<?php echo esc_url( get_post_type_archive_link( 'download' ) ); ?>" class="filter active" data-filter="*">
-									<?php esc_html_e( 'All', 'youxi' ) ?>
+									<?php esc_html_e( 'All', 'helium' ) ?>
 								</a>
 							</li><?php
 
@@ -230,7 +230,7 @@ $wp_query = $the_query;
 									else: ?>
 									<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" class="edd-download-view-details" itemprop="url">
 										<i class="fa fa-external-link"></i>
-										<?php _e( 'Details', 'helium' ); ?>
+										<?php esc_html_e( 'Details', 'helium' ); ?>
 									</a>
 									<?php endif; ?>
 								</div>
@@ -262,7 +262,7 @@ $wp_query = $the_query;
 				if( 'show_all' != $grid_settings['pagination'] ):
 
 					echo '<div class="grid-list-nav">';
-						helium_posts_pagination( $grid_settings['pagination'] );
+						helium_entry_pagination( $grid_settings['pagination'] );
 					echo '</div>';
 					
 				endif; ?>

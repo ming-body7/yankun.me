@@ -7,7 +7,7 @@ class Youxi_Quote_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'quote-widget', 'description' => __( 'Use this widget to display a quote', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-quote-widget', 'description' => __( 'Use this widget to display a quote', 'youxi' ) );
 		$control_opts = array( 'width' => '400px' );
 
 		// Initialize WP_Widget

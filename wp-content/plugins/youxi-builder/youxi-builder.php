@@ -3,13 +3,26 @@
 Plugin Name: Youxi Page Builder
 Plugin URI: http://www.themeforest.net/user/nagaemas
 Description: This plugin adds the ability to build pages using a user friendly drag and drop interface that's tightly integrated into the WordPress editor. This plugin is completely independent, and only requires Youxi Shortcodes plugin to work. All content generated with the help of this plugin can still work as long the shortcode plugin is active.
-Version: 2.2
+Version: 2.4.1
 Author: YouxiThemes
 Author URI: http://www.themeforest.net/user/nagaemas
 License: Envato Marketplace Licence
 
 Changelog:
-2.2 - 14/09/2014
+2.4.1 - 26/08/2015
+- Fixed a bug causing WordPress below version 4.3 to crash
+
+2.4 - 20/08/2015
+- Rewrite WordPress editor integration code for WordPress 4.3
+- Requires at least WordPress 4.3
+
+2.3 - 09/03/2015
+- Fix Integration on WordPress 4.1+
+- Update: Translation files
+- Update: FontAwesome v4.3
+- Improvement: Remove explicit builder icon definitions
+
+2.2- 14/09/2014
 - Fix TinyMCE integration bug caused by WordPress 4.0 changes
 - Reduce dependency on jQuery-UI to prevent styling conflicts if jQuery-UI CSS is enqueud
 - Updated for Youxi Shortcode 3.1 new features compatibility
@@ -61,6 +74,8 @@ if( ! is_admin() ) {
 
 function youxi_builder_plugins_loaded() {
 
+	global $wp_version;
+	
 	if( ! defined( 'YOUXI_SHORTCODE_VERSION' ) ) {
 
 		if( ! class_exists( 'Youxi_Admin_Notice' ) ) {
@@ -71,17 +86,24 @@ function youxi_builder_plugins_loaded() {
 
 	} else {
 
-		if( -1 === version_compare( YOUXI_SHORTCODE_VERSION, '3.1' ) ) {
+		if( version_compare( YOUXI_SHORTCODE_VERSION, '3.1', '<' ) ) {
 			if( ! class_exists( 'Youxi_Admin_Notice' ) ) {
 				require( plugin_dir_path( __FILE__ ) . 'class-admin-notice.php' );
 			}
 			Youxi_Admin_Notice::instance()->add_error( __FILE__, __( 'The current version of this plugin requires at least Youxi Shortcode 3.1 to work.', 'youxi' ) );
 			return;
 		}
-
 	}
 
-	define( 'YOUXI_BUILDER_VERSION', '2.2' );
+	if( version_compare( $wp_version, '4.3', '<' ) ) {
+		if( ! class_exists( 'Youxi_Admin_Notice' ) ) {
+			require( plugin_dir_path( __FILE__ ) . 'class-admin-notice.php' );
+		}
+		Youxi_Admin_Notice::instance()->add_error( __FILE__, __( 'The current version of this plugin requires at least WordPress 4.3.', 'youxi' ) );
+		return;
+	}
+
+	define( 'YOUXI_BUILDER_VERSION', '2.4.1' );
 
 	define( 'YOUXI_BUILDER_DIR', plugin_dir_path( __FILE__ ) );
 	define( 'YOUXI_BUILDER_URL', plugin_dir_url( __FILE__ ) );

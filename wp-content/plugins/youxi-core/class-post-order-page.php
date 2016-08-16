@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * This class creates the post order page.
  *
  * @package   Youxi Core
- * @author    Mairel Theafila <maimairel@yahoo.com>
- * @copyright Copyright (c) 2013, Mairel Theafila
+ * @author    Mairel Theafila <maimairel@gmail.com>
+ * @copyright Copyright (c) 2013-2015, Mairel Theafila
  */
 
 if( ! class_exists( 'Youxi_Post_Order_Page' ) ) {
@@ -27,7 +27,19 @@ if( ! class_exists( 'Youxi_Post_Order_Page' ) ) {
 
 		public function page_callback() {
 
-			global $wp_version;
+			global $wp_version, $sitepress;
+
+			/* When WPML is enabled, make sure to switch to the default language */
+			if( is_a( $sitepress, 'SitePress' ) ) {
+
+				$default_language = $sitepress->get_default_language();
+				$current_language = $sitepress->get_current_language();
+
+				if( $current_language != $default_language ) {
+
+					$sitepress->switch_lang( $default_language );
+				}
+			}
 
 			$posts = get_posts(array(
 				'post_type' => $this->post_type_object->name, 
@@ -36,6 +48,13 @@ if( ! class_exists( 'Youxi_Post_Order_Page' ) ) {
 				'order' => 'ASC', 
 				'suppress_filters' => false
 			));
+
+			/* Restore the current language */
+			if( is_a( $sitepress, 'SitePress' ) ) {
+
+				$sitepress->switch_lang( $current_language );
+			}
+
 			?>
 			<div class="wrap">
 				
@@ -48,6 +67,9 @@ if( ! class_exists( 'Youxi_Post_Order_Page' ) ) {
 					<div class="youxi-post-order-items-holder">
 
 					<?php foreach( $posts as $post ): ?>
+
+						<?php  ?>
+
 						<div class="youxi-post-order-item" data-post-id="<?php echo esc_attr( $post->ID ) ?>">
 							<div class="youxi-post-order-item-header">
 								<div class="item-title">

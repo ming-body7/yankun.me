@@ -14,7 +14,6 @@ if( ! defined( 'YOUXI_WIDGETS_VERSION' ) ) {
  */
 add_filter( 'youxi_widgets_social-widget_enqueue_scripts', '__return_false' );
 add_filter( 'youxi_widgets_google-maps-widget_enqueue_scripts', '__return_false' );
-add_filter( 'youxi_widgets_flickr-widget_enqueue_scripts', '__return_false' );
 add_filter( 'youxi_widgets_allow_google-maps-widget_setup', '__return_false' );
 
 /**
@@ -31,16 +30,12 @@ add_filter( 'youxi_widgets_use_rotating_quotes', '__return_false' );
 if( ! function_exists( 'helium_widgets_twitter_keys' ) ):
 
 function helium_widgets_twitter_keys( $keys ) {
-	if( function_exists( 'helium_get_option' ) ) {
-		return array(
-			'consumer_key'       => helium_get_option( 'twitter_consumer_key' ), 
-			'consumer_secret'    => helium_get_option( 'twitter_consumer_secret' ), 
-			'oauth_token'        => helium_get_option( 'twitter_access_token' ), 
-			'oauth_token_secret' => helium_get_option( 'twitter_access_token_secret' )
-		);
-	}
-
-	return $keys;
+	return array(
+		'consumer_key'       => trim( Youxi()->option->get( 'twitter_consumer_key' ) ), 
+		'consumer_secret'    => trim( Youxi()->option->get( 'twitter_consumer_secret' ) ), 
+		'oauth_token'        => trim( Youxi()->option->get( 'twitter_access_token' ) ), 
+		'oauth_token_secret' => trim( Youxi()->option->get( 'twitter_access_token_secret' ) )
+	);
 }
 endif;
 add_filter( 'youxi_widgets_twitter_keys', 'helium_widgets_twitter_keys' );
@@ -57,25 +52,15 @@ endif;
 add_filter( 'youxi_widgets_template_dir', 'helium_widgets_template_dir' );
 
 /**
- * Match Widget Area Locations
+ * Instagram Client ID
  */
-if( ! function_exists( 'helium_widget_sidebar_location' ) ):
+if( ! function_exists( 'helium_youxi_instagram_client_id' ) ):
 
-	function helium_widget_sidebar_location( $sidebar_id ) {
-		$regexes = array(
-			'/^footer_widget_area_\d+$/' => 'footer'
-		);
-
-		foreach( $regexes as $regex => $location ) {
-			if( preg_match( $regex, $sidebar_id ) ) {
-				return $location;
-			}
-		}
-
-		return 'sidebar';
-	}
+function helium_youxi_instagram_client_id( $client_id ) {
+	return '49e1e410b32a446c90477501b98ed7e1';
+}
 endif;
-add_filter( 'youxi_widgets_sidebar_location', 'helium_widget_sidebar_location' );
+add_filter( 'youxi_instagram_client_id', 'helium_youxi_instagram_client_id' );
 
 /**
  * Recognized Social Icons

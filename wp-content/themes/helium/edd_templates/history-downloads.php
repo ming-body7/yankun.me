@@ -7,9 +7,9 @@ if ( $purchases ) :
 		<thead>
 			<tr class="edd_download_history_row">
 				<?php do_action( 'edd_download_history_header_start' ); ?>
-				<th class="edd_download_download_name"><?php _e( 'Download Name', 'helium' ); ?></th>
+				<th class="edd_download_download_name"><?php esc_html_e( 'Download Name', 'helium' ); ?></th>
 				<?php if ( ! edd_no_redownload() ) : ?>
-					<th class="edd_download_download_files"><?php _e( 'Files', 'helium' ); ?></th>
+					<th class="edd_download_download_files"><?php esc_html_e( 'Files', 'helium' ); ?></th>
 				<?php endif; //End if no redownload?>
 				<?php do_action( 'edd_download_history_header_end' ); ?>
 			</tr>
@@ -64,12 +64,12 @@ if ( $purchases ) :
 										endforeach;
 
 									else :
-										_e( 'No downloadable files found.', 'helium' );
+										esc_html_e( 'No downloadable files found.', 'helium' );
 									endif; // End if payment complete
 
 								else : ?>
 									<span class="edd_download_payment_status">
-										<?php printf( __( 'Payment status is %s', 'helium' ), edd_get_payment_status( $payment, true) ); ?>
+										<?php printf( esc_html__( 'Payment status is %s', 'helium' ), edd_get_payment_status( $payment, true) ); ?>
 									</span>
 									<?php
 								endif; // End if $download_files
@@ -101,7 +101,7 @@ if ( $purchases ) :
 	do_action( 'edd_after_download_history' );
 else : ?>
 	<div class="alert alert-info edd-no-downloads">
-		<?php _e( 'You have not purchased any downloads', 'helium' ); ?>
+		<?php esc_html_e( 'You have not purchased any downloads', 'helium' ); ?>
 	</div>
 	<?php
 endif;

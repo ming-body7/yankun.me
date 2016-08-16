@@ -3,9 +3,9 @@
 	<thead>
 		<tr class="edd_cart_header_row">
 			<?php do_action( 'edd_checkout_table_header_first' ); ?>
-			<th class="edd_cart_item_name"><?php _e( 'Item Name', 'helium' ); ?></th>
-			<th class="edd_cart_item_price"><?php _e( 'Item Price', 'helium' ); ?></th>
-			<th class="edd_cart_actions"><?php _e( 'Actions', 'helium' ); ?></th>
+			<th class="edd_cart_item_name"><?php esc_html_e( 'Item Name', 'helium' ); ?></th>
+			<th class="edd_cart_item_price"><?php esc_html_e( 'Item Price', 'helium' ); ?></th>
+			<th class="edd_cart_actions"><?php esc_html_e( 'Actions', 'helium' ); ?></th>
 			<?php do_action( 'edd_checkout_table_header_last' ); ?>
 		</tr>
 	</thead>
@@ -37,7 +37,7 @@
 							<input type="hidden" name="edd-cart-downloads[]" value="<?php echo $item['id']; ?>"/>
 							<input type="hidden" name="edd-cart-download-<?php echo $key; ?>-options" value="<?php echo esc_attr( serialize( $item['options'] ) ); ?>"/>
 						<?php endif; ?>
-						<a class="edd_cart_remove_item_btn form-control-static" href="<?php echo esc_url( edd_remove_item_url( $key, $post ) ); ?>"><?php _e( 'Remove', 'helium' ); ?></a>
+						<a class="edd_cart_remove_item_btn form-control-static" href="<?php echo esc_url( edd_remove_item_url( $key, $post ) ); ?>"><?php esc_html_e( 'Remove', 'helium' ); ?></a>
 					</td>
 					<?php do_action( 'edd_checkout_table_body_last', $item ); ?>
 				</tr>
@@ -52,7 +52,7 @@
 					<td class="edd_cart_fee_amount"><?php echo esc_html( edd_currency_filter( edd_format_amount( $fee['amount'] ) ) ); ?></td>
 					<td>
 						<?php if( ! empty( $fee['type'] ) && 'item' == $fee['type'] ) : ?>
-							<a href="<?php echo esc_url( edd_remove_cart_fee_url( $fee_id ) ); ?>"><?php _e( 'Remove', 'helium' ); ?></a>
+							<a href="<?php echo esc_url( edd_remove_cart_fee_url( $fee_id ) ); ?>"><?php esc_html_e( 'Remove', 'helium' ); ?></a>
 						<?php endif; ?>
 					</td>
 				</tr>
@@ -75,7 +75,7 @@
 			<tr class="edd_cart_footer_row edd_cart_subtotal_row"<?php if ( ! edd_is_cart_taxed() ) echo ' style="display:none;"'; ?>>
 				<?php do_action( 'edd_checkout_table_subtotal_first' ); ?>
 				<th colspan="<?php echo edd_checkout_cart_columns(); ?>" class="edd_cart_subtotal">
-					<?php _e( 'Subtotal', 'helium' ); ?>:&nbsp;<span class="edd_cart_subtotal_amount"><?php echo edd_cart_subtotal(); ?></span>
+					<?php esc_html_e( 'Subtotal', 'helium' ); ?>:&nbsp;<span class="edd_cart_subtotal_amount"><?php echo edd_cart_subtotal(); ?></span>
 				</th>
 				<?php do_action( 'edd_checkout_table_subtotal_last' ); ?>
 			</tr>
@@ -93,7 +93,7 @@
 			<tr class="edd_cart_footer_row edd_cart_tax_row"<?php if( ! edd_is_cart_taxed() ) echo ' style="display:none;"'; ?>>
 				<?php do_action( 'edd_checkout_table_tax_first' ); ?>
 				<th colspan="<?php echo edd_checkout_cart_columns(); ?>" class="edd_cart_tax">
-					<?php _e( 'Tax', 'helium' ); ?>:&nbsp;<span class="edd_cart_tax_amount" data-tax="<?php echo edd_get_cart_tax( false ); ?>"><?php echo esc_html( edd_cart_tax() ); ?></span>
+					<?php esc_html_e( 'Tax', 'helium' ); ?>:&nbsp;<span class="edd_cart_tax_amount" data-tax="<?php echo edd_get_cart_tax( false ); ?>"><?php echo esc_html( edd_cart_tax() ); ?></span>
 				</th>
 				<?php do_action( 'edd_checkout_table_tax_last' ); ?>
 			</tr>
@@ -102,7 +102,7 @@
 
 		<tr class="edd_cart_footer_row">
 			<?php do_action( 'edd_checkout_table_footer_first' ); ?>
-			<th colspan="<?php echo edd_checkout_cart_columns(); ?>" class="edd_cart_total"><?php _e( 'Total', 'helium' ); ?>: <span class="edd_cart_amount" data-subtotal="<?php echo edd_get_cart_total(); ?>" data-total="<?php echo edd_get_cart_total(); ?>"><?php edd_cart_total(); ?></span></th>
+			<th colspan="<?php echo edd_checkout_cart_columns(); ?>" class="edd_cart_total"><?php esc_html_e( 'Total', 'helium' ); ?>: <span class="edd_cart_amount" data-subtotal="<?php echo edd_get_cart_total(); ?>" data-total="<?php echo edd_get_cart_total(); ?>"><?php edd_cart_total(); ?></span></th>
 			<?php do_action( 'edd_checkout_table_footer_last' ); ?>
 		</tr>
 	</tfoot>

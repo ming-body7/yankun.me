@@ -9,27 +9,27 @@ edd_print_errors(); ?>
 
 	<fieldset>
 
-		<legend><?php _e( 'Register New Account', 'helium' ); ?></legend>
+		<legend><?php esc_html_e( 'Register New Account', 'helium' ); ?></legend>
 
 		<?php do_action( 'edd_register_form_fields_before' ); ?>
 
 		<div class="form-group">
-			<label for="edd-user-login" class="control-label"><?php _e( 'Username', 'helium' ); ?></label>
+			<label for="edd-user-login" class="control-label"><?php esc_html_e( 'Username', 'helium' ); ?></label>
 			<input id="edd-user-login" class="required edd-input form-control" type="text" name="edd_user_login" title="<?php esc_attr_e( 'Username', 'helium' ); ?>" />
 		</div>
 
 		<div class="form-group">
-			<label for="edd-user-email" class="control-label"><?php _e( 'Email', 'helium' ); ?></label>
+			<label for="edd-user-email" class="control-label"><?php esc_html_e( 'Email', 'helium' ); ?></label>
 			<input id="edd-user-email" class="required edd-input form-control" type="email" name="edd_user_email" title="<?php esc_attr_e( 'Email Address', 'helium' ); ?>" />
 		</div>
 
 		<div class="form-group">
-			<label for="edd-user-pass" class="control-label"><?php _e( 'Password', 'helium' ); ?></label>
+			<label for="edd-user-pass" class="control-label"><?php esc_html_e( 'Password', 'helium' ); ?></label>
 			<input id="edd-user-pass" class="password required edd-input form-control" type="password" name="edd_user_pass" />
 		</div>
 
 		<div class="form-group">
-			<label for="edd-user-pass2" class="control-label"><?php _e( 'Confirm Password', 'helium' ); ?></label>
+			<label for="edd-user-pass2" class="control-label"><?php esc_html_e( 'Confirm Password', 'helium' ); ?></label>
 			<input id="edd-user-pass2" class="password required edd-input form-control" type="password" name="edd_user_pass2" />
 		</div>
 

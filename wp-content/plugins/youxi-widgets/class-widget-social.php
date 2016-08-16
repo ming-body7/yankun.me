@@ -11,7 +11,7 @@ class Youxi_Social_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'social-widget', 'description' => __( 'Use this widget to link your social profiles using a set of retina ready icons.', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-social-widget', 'description' => __( 'Use this widget to link your social profiles using a set of retina ready icons.', 'youxi' ) );
 		$control_opts = array( 'width' => '400px' );
 
 		// Initialize WP_Widget
@@ -236,30 +236,30 @@ class Youxi_Social_Widget extends Youxi_WP_Widget {
 			<tr>
 				<td>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( "items-$index-url" ) ) ?>"><?php _e( 'URL', 'youxi' ) ?>:</label>
-						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "items-$index-url" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items][$index][url" ) ) ?>" type="text" value="<?php echo esc_attr( $values['url'] ) ?>">
+						<label for="<?php echo esc_attr( $this->get_field_id( "items[$index][url]" ) ) ?>"><?php _e( 'URL', 'youxi' ) ?>:</label>
+						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "items[$index][url]" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items[$index][url]" ) ) ?>" type="text" value="<?php echo esc_attr( $values['url'] ) ?>">
 					</p>
 				</td>
 				<td>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( "items-$index-title" ) ) ?>"><?php _e( 'Title', 'youxi' ) ?>:</label>
-						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "items-$index-title" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items][$index][title" ) ) ?>" type="text" value="<?php echo esc_attr( $values['title'] ) ?>">
+						<label for="<?php echo esc_attr( $this->get_field_id( "items[$index][title]" ) ) ?>"><?php _e( 'Title', 'youxi' ) ?>:</label>
+						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( "items[$index][title]" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items[$index][title]" ) ) ?>" type="text" value="<?php echo esc_attr( $values['title'] ) ?>">
 					</p>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( "items-$index-icon" ) ) ?>"><?php _e( 'Icon', 'youxi' ) ?>:</label>
-						<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( "items-$index-icon" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items][$index][icon" ) ) ?>">
+						<label for="<?php echo esc_attr( $this->get_field_id( "items[$index][icon]" ) ) ?>"><?php _e( 'Icon', 'youxi' ) ?>:</label>
+						<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( "items[$index][icon]" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items[$index][icon]" ) ) ?>">
 							<?php foreach( $this->get_icons() as $key => $icon ): ?>
 							<option value="<?php echo esc_attr( $key ) ?>" <?php selected( $values['icon'], $key ) ?>><?php echo $icon ?></option>
 							<?php endforeach; ?>
 						</select>
 					</p>
 					<p>
-						<input id="<?php echo esc_attr( $this->get_field_id( "items-$index-newtab" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items][$index][newtab" ) ) ?>" type="checkbox" <?php checked( (bool) $values['newtab'], true ) ?>>
-						<label for="<?php echo esc_attr( $this->get_field_id( "items-$index-newtab" ) ) ?>"><?php _e( 'Open link in a new window/tab.', 'youxi' ); ?></label>
+						<input id="<?php echo esc_attr( $this->get_field_id( "items[$index][newtab]" ) ) ?>" name="<?php echo esc_attr( $this->get_field_name( "items[$index][newtab]" ) ) ?>" type="checkbox" <?php checked( (bool) $values['newtab'], true ) ?>>
+						<label for="<?php echo esc_attr( $this->get_field_id( "items[$index][newtab]" ) ) ?>"><?php _e( 'Open link in a new window/tab.', 'youxi' ); ?></label>
 					</p>
 				</td>
 			</tr>

@@ -2,14 +2,14 @@
 
 ?><div class="content-area-wrap">
 
-	<div class="content-area <?php echo esc_attr( helium_get_option( 'blog_index_layout' ) ) ?>">
+	<div class="content-area <?php echo esc_attr( Youxi()->option->get( 'blog_index_layout' ) ) ?>">
 
 		<div class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 				?><h1 class="content-title">
-					<?php echo helium_get_option( 'blog_index_title' ); ?>
+					<?php echo Youxi()->option->get( 'blog_index_title' ); ?>
 				</h1>
 
 			</div>
@@ -20,10 +20,10 @@
 
 			<?php
 			while( have_posts() ) : the_post();
-				get_template_part( 'template-parts/post/' . 'default' . '/entry', get_post_format() );
+				Youxi()->templates->get( 'entry', get_post_format(), get_post_type() );
 			endwhile;
 
-			helium_posts_pagination(); ?>
+			helium_entry_pagination(); ?>
 
 		</div>
 

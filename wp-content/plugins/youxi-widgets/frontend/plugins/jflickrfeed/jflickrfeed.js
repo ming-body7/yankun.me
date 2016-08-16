@@ -53,11 +53,9 @@
 						
 						// Add Image Sizes
 						// http://www.flickr.com/services/api/misc.urls.html
-						item['image_s'] = item.media.m.replace('_m', '_s');
-						item['image_t'] = item.media.m.replace('_m', '_t');
-						item['image_m'] = item.media.m.replace('_m', '_m');
-						item['image'] = item.media.m.replace('_m', '');
-						item['image_b'] = item.media.m.replace('_m', '_b');
+						$.each( [ 's', 'q', 't', 'm', 'n', '', 'z', 'c', 'b', 'h', 'k' ], function( index, size ) {
+							item['image_' + size ] = item.media.m.replace( '_m', ( size ? '_' + size : '' ) );
+						});
 						delete item.media;
 						
 						// Use Template

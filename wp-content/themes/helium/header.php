@@ -16,10 +16,10 @@
 <body <?php body_class() ?> itemscope itemtype="http://schema.org/WebPage">
 
 	<div class="back-to-top">
-		<a href="#"><i class="fa fa-angle-up"></i></a>
+		<button class="btn btn-ui"><i class="fa fa-angle-up"></i></button>
 	</div>
 
-	<?php if( helium_get_option( 'show_search' ) ):
+	<?php if( Youxi()->option->get( 'show_search' ) ):
 	?>
 	<div class="search-wrap"><?php
 
@@ -57,9 +57,9 @@
 						<div class="header-content-top">
 
 							<div class="header-links">
-								<ul><?php
+								<ul class="inline-list"><?php
 
-									if( helium_get_option( 'show_search' ) ):
+									if( Youxi()->option->get( 'show_search' ) ):
 
 									?><li class="ajax-search-link">
 										<a href="#"><i class="fa fa-search"></i></a>
@@ -67,7 +67,7 @@
 
 									endif;
 
-									if( helium_get_option( 'edd_show_cart' ) && class_exists( 'Easy_Digital_Downloads' ) ):
+									if( Youxi()->option->get( 'edd_show_cart' ) && class_exists( 'Easy_Digital_Downloads' ) ):
 
 									?><li class="edd-shopping-cart">
 										<a href="<?php echo esc_url( edd_get_checkout_uri() ); ?>">
@@ -82,25 +82,27 @@
 								?></ul>
 							</div>
 
-							<div class="brand">
+							<div class="brand"><?php
 
-								<a href="<?php echo esc_url( home_url() ); ?>"><span></span><?php 
-									if( helium_get_option( 'logo_image' ) ):
-									?><img src="<?php echo esc_url( helium_get_option( 'logo_image' ) ); ?>" alt="<?php bloginfo( 'name' ); ?>">
-									<?php else:
-									?><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/default-logo.png' ); ?>" alt="<?php bloginfo( 'name' ); ?>">
-									<?php endif; ?>
-								</a>
+								?><div class="site-logo">
 
-								<div class="tagline"><?php bloginfo( 'description' ) ?></div>
+									<a href="<?php echo esc_url( home_url() ); ?>"><?php 
+										if( Youxi()->option->get( 'logo_image' ) ):
+										?><img src="<?php echo esc_url( Youxi()->option->get( 'logo_image' ) ); ?>" alt="<?php bloginfo( 'name' ); ?>">
+										<?php else:
+										?><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/default-logo.png' ); ?>" alt="<?php bloginfo( 'name' ); ?>">
+										<?php endif; ?>
+									</a><?php
 
-							</div>
+								?></div><?php
 
-							<a class="header-toggle" href="#">
-								<span class="hamburger">
-									<span><span></span><span></span></span>
-								</span>
-							</a>
+								?><div class="tagline"><?php bloginfo( 'description' ) ?></div><?php
+
+							?></div>
+
+							<button class="header-toggle btn btn-ui">
+								<span><span></span></span>
+							</button>
 
 						</div>
 
@@ -117,9 +119,9 @@
 
 							<?php get_sidebar();
 
-							if( helium_get_option( 'copyright_text' ) ):
+							if( Youxi()->option->get( 'copyright_text' ) ):
 							?>
-							<div class="header-copyright"><?php echo helium_get_option( 'copyright_text' ); ?></div>
+							<div class="header-copyright"><?php echo Youxi()->option->get( 'copyright_text' ); ?></div>
 							<?php endif; ?>
 
 						</div>

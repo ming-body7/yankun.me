@@ -8,15 +8,22 @@
 @content-spacing-md: 30px;
 
 
+// Admin bar
+
+@admin-bar-height-mobile: 46px;
+@admin-bar-height: 32px;
+
+
 // Typography
 
 @quote-blockquote-font-family: @font-family-serif;
 @quote-blockquote-font-style: italic;
+@quote-blockquote-font-size: 24px;
 
 
 // Header variables
 
-@header-bg: #fff;
+@header-bg: #ffffff;
 @header-font-size-base: 13px;
 
 @header-content-top-height: 80px;
@@ -40,11 +47,14 @@
 // Content header variables
 
 @content-header-height: 60px;
-@content-header-bg: #fff;
+@content-header-bg: #ffffff;
 
 @content-title-z-index: 345;
 @content-title-font-size: 17px;
 @content-title-line-height: 1.52941176470588235294;
+
+
+// Content nav variables
 
 @content-nav-height: 44px;
 @content-nav-height-md: 60px;
@@ -69,15 +79,13 @@
 @content-wrap-inner-padding-horz-sm: @content-wrap-inner-padding-vert-sm - ( @grid-gutter-width / 2 );
 @content-wrap-inner-padding-horz-md: @content-wrap-inner-padding-vert-md - ( @grid-gutter-width / 2 );
 
-@content-inner-bg: #fff;
+@content-inner-bg: #ffffff;
 
 
 // General Content
 
-@item-detail-spacing: 13px;
+@item-detail-spacing: 15px;
 @item-detail-color: @text-muted;
-
-@item-detail-label-font-size: @font-size-base - 1;
 @item-detail-label-color: @headings-color;
 
 
@@ -89,29 +97,20 @@
 @gridlist-gutter-width: 20px;
 @gridlist-gutter-width-md: 30px;
 
-@gridlist-title-font-size: 15px;
+@gridlist-title-font-size: 16px;
 @gridlist-subtitle-font-size: 13px;
-
-@gridlist-title-font-family: @headings-font-family;
-@gridlist-subtitle-font-family: inherit;
-
-@gridlist-title-font-weight: @headings-font-weight;
-@gridlist-subtitle-font-weight: 300;
 
 
 // Blog variables
 
-@post-title-line-height: 1.1;
-
 @post-date-font-size: 13px;
 @post-date-color: @text-muted;
-@post-date-letter-spacing: .05em;
 
 @post-meta-font-size: 13px;
 @post-meta-color: @text-muted;
 
 @post-meta-list-horizontal-margin: 1.5em;
-@post-meta-list-icon-margin: 0.16em;
+@post-meta-list-icon-margin: 0.3em;
 
 @post-date-color: @text-muted;
 @post-date-font-size: 13px;
@@ -120,28 +119,26 @@
 
 @post-date-width-sm: 120px;
 
-@post-body-line-height: 1.8571428;
+@entry-author-avatar-width: 80px;
+@entry-author-avatar-width-lg: 100px;
+@entry-author-avatar-margin: 20px;
+@entry-author-avatar-margin-lg: 30px;
 
-@post-author-avatar-width: 80px;
-@post-author-avatar-width-lg: 100px;
-@post-author-avatar-margin: 20px;
-@post-author-avatar-margin-lg: 30px;
+@entry-comment-spacing: 35px;
 
-@post-comment-spacing: 35px;
+@entry-comment-avatar-width: 60px;
+@entry-comment-avatar-margin: 20px;
 
-@post-comment-avatar-width: 60px;
-@post-comment-avatar-margin: 20px;
+@entry-comment-links-font-size: 13px;
 
-@post-comment-links-font-size: 13px;
+@entry-comment-time-font-size: 13px;
+@entry-comment-time-font-style: normal;
+@entry-comment-time-color: @text-muted;
 
-@post-comment-time-font-size: 13px;
-@post-comment-time-font-style: normal;
-@post-comment-time-color: @text-muted;
+@entry-comment-body-padding-top: 10px;
+@entry-comment-body-padding-top-lg: 15px;
 
-@post-comment-body-padding-top: 10px;
-@post-comment-body-padding-top-lg: 15px;
-
-@post-comment-form-notes-font-size: 13px;
+@entry-comment-form-notes-font-size: 13px;
 
 
 // Social Media Colors

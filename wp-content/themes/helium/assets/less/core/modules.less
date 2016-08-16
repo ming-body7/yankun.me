@@ -1,12 +1,14 @@
 
 /* ==========================================================================
-	11.1 Justified Grids
+	12.1 Justified Grids
 ============================================================================= */
 
 .justified-grids {
 	white-space: nowrap;
-	> figure {
+	overflow: hidden;
+	.justified-grids-item {
 		display: inline-block;
+		vertical-align: top;
 		img {
 			width: auto;
 		}
@@ -20,7 +22,7 @@
 }
 
 /* ==========================================================================
-	11.2 Google Maps
+	12.2 Google Maps
 ============================================================================= */
 
 .google-maps-container {
@@ -34,7 +36,7 @@
 }
 
 /* ==========================================================================
-	11.3 Team
+	12.3 Team
 ============================================================================= */
 
 .team {
@@ -73,7 +75,7 @@
 }
 
 /* ==========================================================================
-	11.4 Team Popup
+	12.4 Team Popup
 ============================================================================= */
 
 .team-popup {
@@ -109,7 +111,6 @@
 			padding: 20px 35px;
 			border-top: 1px solid @base-border-color;
 			ul {
-				&:extend(ul.inline-list all);
 				li {
 					+ li {
 						margin-left: 1.5em;
@@ -124,7 +125,7 @@
 }
 
 /* ==========================================================================
-	11.5 Client List
+	12.5 Client List
 ============================================================================= */
 
 .client-list {
@@ -135,8 +136,6 @@
 	overflow: hidden;
 
 	ul {
-		.clearfix();
-		&:extend(ul.plain-list);
 		margin-bottom: -(@client-border-size + @client-border-thickness);
 	}
 
@@ -210,7 +209,7 @@
 }
 
 /* ==========================================================================
-	11.6 Pricing Tables
+	12.6 Pricing Tables
 ============================================================================= */
 
 .pricing-table {
@@ -271,7 +270,7 @@
 }
 
 /* ==========================================================================
-	11.7 Portfolio Featured Slider
+	12.7 Portfolio Featured Slider
 ============================================================================= */
 
 .featured-portfolio-slider {
@@ -297,8 +296,6 @@
 			margin: 0;
 			line-height: 1;
 			font-size: @gridlist-title-font-size;
-			font-weight: @gridlist-title-font-weight;
-			font-family: @gridlist-title-font-family;
 		}
 
 		.entry-meta {
@@ -306,8 +303,6 @@
 			color: @text-muted;
 			line-height: 1.5;
 			font-size: @gridlist-subtitle-font-size;
-			font-weight: @gridlist-subtitle-font-weight;
-			font-family: @gridlist-subtitle-font-family;
 		}
 
 		&:after {

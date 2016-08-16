@@ -5,138 +5,114 @@
  *
  * @package   Youxi Builder
  * @author    Mairel Theafila <maimairel@yahoo.com>
- * @copyright Copyright (c) 2013, Mairel Theafila
+ * @copyright Copyright (c) 2013-2015, Mairel Theafila
  */
 
 ;(function( $, window, document, undefined ) {
 
 	"use strict";
 
-	$.Youxi.Builder.editor = {
+	$.Youxi.Builder.Manager = {
 
 		instances: {}, 
 
 		add: function( editorId ) {
 
-			var builder = this.get( editorId );
-
-			if( builder ) {
-				return builder;
+			var instance = this.instances[ editorId ];
+			if( ! instance ) {
+				instance = $.Youxi.Builder({ editorId: editorId });
 			}
-
-			builder = $.Youxi.Builder({
-				editorId: editorId
-			});
-
-			this.instances[editorId] = builder;
-
-			return builder;
+			return ( this.instances[ editorId ] = instance );
 		}, 
 
 		get: function( editorId ) {
-			return this.instances[editorId];
+			return this.instances[ editorId ];
 		}, 
 
 		init: function() {
 
-			/* Don't initialize multiple times */
-			if( this.initialized )
+			/* Don't initialize multiple times, and bail if tinymce is undefined */
+			if( this.initialized || ! window.switchEditors || typeof tinymce == 'undefined' )
 				return;
 
 			this.initialized = true;
 
-			/* Bail if tinymce or switcheditors is not present */
-			if( ! window.switchEditors || typeof tinymce == 'undefined' )
+			/* Move the builder toggle button */
+			$( '.wp-switch-editor.switch-youxi-builder' ).each(function() {
+				var wpEditorTabs = $( this ).closest( '.wp-editor-tools' ).find( '.wp-editor-tabs' );
+				$( this ).removeAttr( 'style' ).appendTo( wpEditorTabs );
+			});
+		}, 
+
+		show: function( id ) {
+
+			var builderInstance = this.get( id );
+			if( ! this.initialized || ( builderInstance && ! builderInstance.isHidden() ) ) {
+				return;
+			}
+
+			/* Change to TinyMCE mode first, it's easier */
+			window.switchEditors.go( id, 'tmce' );
+
+			/* Hide TinyMCE */
+			var editor = tinymce.get( id );
+			if( editor && ! editor.isHidden() ) {
+				editor.hide();
+			}
+
+			/* Show the page builder */			
+			if( ! builderInstance ) {
+				builderInstance = this.add( id );
+			}
+			builderInstance.show();
+
+			$( '#wp-' + id + '-wrap' )
+				.removeClass( 'tmce-active html-active' )
+				.addClass( 'ypbl-active' );
+		}, 
+
+		hide: function( id, mode ) {
+
+			var builderInstance = this.get( id );
+			if( ! this.initialized || ! builderInstance || builderInstance.isHidden() )
 				return;
 
-			/* Move the builder toggle button */
-			$( 'a.switch-youxi-builder' ).each(function() {
-				$( this )
-					.closest( '.wp-media-buttons' )
-					.siblings( '.wp-editor-tabs' )
-					.prepend( $( this ).removeAttr( 'style' ) );
-			});
+			builderInstance.hide();
+			$( '#wp-' + id + '-wrap' ).removeClass( 'ypbl-active' );
 
-			/* Backup switchEditors.go function */
-			var builderEditor = this;
-			this.switchEditorsGo = window.switchEditors.go;
-
-			/* Override switchEditors.go */
-			window.switchEditors.go = function( id, mode ) {
-
-				var builderInstance = builderEditor.get( id );
-
-				if( ! builderInstance || builderInstance.isHidden() ) {
-					if( 'ypbl' !== mode ) {
-						return builderEditor.switchEditorsGo.apply( this, arguments );
-					}
-				}
-
-				var ed, wrap_id, txtarea_el,
-					DOM = tinymce.DOM; //DOMUtils outside the editor iframe
-
-				id = id || 'content';
-				mode = mode || 'toggle';
-
-				ed = tinyMCE.get( id );
-				wrap_id = 'wp-' + id + '-wrap';
-				txtarea_el = DOM.get( id );
-
-				if( 'ypbl' === mode ) {
-
-					// Bail if the builder is already visible
-					if( builderInstance && ! builderInstance.isHidden() ) {
-						return false;
-					}
-
-					// Hide the tmce editor
-					if( ed && ! ed.isHidden() ) {
-						ed.hide();
-					}
-					DOM.removeClass( wrap_id, 'tmce-active' );
-
-					// Hide the html editor
-					if( typeof( QTags ) !== 'undefined' ) {
-						QTags.closeAllTags( id );
-					}
-					if( tinyMCEPreInit.mceInit[ id ] && tinyMCEPreInit.mceInit[ id ].wpautop ) {
-						txtarea_el.value = this.pre_wpautop( txtarea_el.value );
-					}
-					DOM.hide( id );
-					DOM.removeClass( wrap_id, 'html-active' );
-
-					// Show the page builder
-					if( ! builderInstance ) {
-						builderInstance = builderEditor.add( id );
-					}
-					builderInstance.show();
-					DOM.addClass( wrap_id, 'ypbl-active' );
-
-				} else {
-
-					/* Work around when we need to go to html mode */
-					if( 'html' === mode ) {
-						builderEditor.switchEditorsGo.apply( this, [ id, 'tmce' ] );
-					} else if( 'tmce' === mode ) {
-						builderEditor.switchEditorsGo.apply( this, [ id, 'html' ] );
-					}
-
-					if( builderInstance && ! builderInstance.isHidden() ) {
-						builderInstance.hide();
-					}
-					DOM.removeClass( wrap_id, 'ypbl-active' );
-
-					return builderEditor.switchEditorsGo.apply( this, arguments );
-				}
-
-				return false;
-			}
+			/* Work around when we need to go to html mode */
+			window.switchEditors.go( id, 'html' == mode ? 'tmce' : 'html' );
 		}
 	};
 
 	/* Init builder on document ready */
-	$( document ).ready(function() {
-		$.Youxi.Builder.editor.init();
+	$( function() {
+		$.Youxi.Builder.Manager.init();
+	});
+
+	/* Hack the switchEditors event handler */
+	$( document ).on( 'click', function( event ) {
+		
+		var id, mode, 
+			target = $( event.target );
+
+		if( target.is( '.wp-switch-editor' ) ) {
+
+			id = target.data( 'wp-editor-id' );
+
+			if( target.is( '.switch-youxi-builder' ) ) {
+
+				if( $.Youxi.Builder.Manager.initialized ) {
+
+					$.Youxi.Builder.Manager.show( id );
+					event.stopImmediatePropagation();
+				}
+			} else {
+
+				mode = target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+				$.Youxi.Builder.Manager.hide( id, mode );
+			}
+		}
 	});
 
 }) ( jQuery, window, document );

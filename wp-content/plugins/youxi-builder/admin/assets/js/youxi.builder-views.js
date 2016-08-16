@@ -5,7 +5,7 @@
  *
  * @package   Youxi Builder
  * @author    Mairel Theafila <maimairel@yahoo.com>
- * @copyright Copyright (c) 2013, Mairel Theafila
+ * @copyright Copyright (c) 2013-2015, Mairel Theafila
  */
 
 "use strict";
@@ -26,10 +26,6 @@ jQuery.Youxi = jQuery.Youxi || {};
 
 		template: wp.template( 'youxi-builder-wrapper' ), 
 
-		fixedHeights: {}, 
-
-		fixedMode: 'none', 
-
 		initialize: function() {
 			_.defaults( this.options, {
 				editorId: 'content'
@@ -49,19 +45,19 @@ jQuery.Youxi = jQuery.Youxi || {};
 		}, 
 
 		disableEditorExpand: function() {
-			this.editorExpandEnabled = ( 'on' == window.getUserSetting( 'editor_expand' ) );
-			if( window.editorExpand && _.isFunction( window.editorExpand.off ) ) {
-				window.editorExpand.off();
-			}
+			this.editorExpandEnabled = $( '#editor-expand-toggle' ).prop( 'checked' );
+			$( '#editor-expand-toggle' )
+				.prop( 'checked', false )
+				.prop( 'disabled', true )
+				.triggerHandler( 'change' );
 			$( document.getElementById( this.options.editorId ) ).hide();
 		}, 
 
 		restoreEditorExpand: function() {
-			if( this.editorExpandEnabled ) {
-				if( window.editorExpand && _.isFunction( window.editorExpand.on ) ) {
-					window.editorExpand.on();
-				}
-			}
+			$( '#editor-expand-toggle' )
+				.prop( 'checked', this.editorExpandEnabled )
+				.prop( 'disabled', false )
+				.triggerHandler( 'change' );
 		}, 
 
 		createMenu: function() {

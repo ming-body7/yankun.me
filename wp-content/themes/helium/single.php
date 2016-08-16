@@ -3,7 +3,7 @@
 <div class="content-area-wrap">
 
 	<?php if( have_posts() ): the_post();
-		get_template_part( 'template-parts/' . get_post_type() . '/entry' );
+		Youxi()->templates->get( 'entry', null, get_post_type() );
 	endif; ?>
 
 </div>

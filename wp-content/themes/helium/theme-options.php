@@ -2,15 +2,15 @@
 /**
  * Initialize the custom theme options.
  */
-add_action( 'admin_init', 'custom_theme_options' );
+add_action( 'init', 'custom_theme_options' );
 
 /**
  * Build the custom settings & update OptionTree.
  */
 function custom_theme_options() {
   
-  /* OptionTree is not loaded yet */
-  if ( ! function_exists( 'ot_settings_id' ) )
+  /* OptionTree is not loaded yet, or this is not an admin request */
+  if ( ! function_exists( 'ot_settings_id' ) || ! is_admin() )
     return false;
     
   /**
@@ -36,8 +36,16 @@ function custom_theme_options() {
         'title'       => __( 'AJAX Navigation', 'helium' )
       ),
       array(
+        'id'          => 'typekit',
+        'title'       => __( 'Typekit', 'helium' )
+      ),
+      array(
         'id'          => 'api_keys',
         'title'       => __( 'API Keys', 'helium' )
+      ),
+      array(
+        'id'          => 'post_type_slugs',
+        'title'       => __( 'Post Type Slugs', 'helium' )
       ),
       array(
         'id'          => 'envato_credentials',
@@ -126,6 +134,51 @@ See this for available buttons: <a href="http://www.addthis.com/services/list">w
         'operator'    => 'and'
       ),
       array(
+        'id'          => 'ajax_exclude_urls',
+        'label'       => __( 'Exclude URLs', 'helium' ),
+        'desc'        => __( 'Specify here a list of URLs on each line where AJAX navigation should be disabled.', 'helium' ),
+        'std'         => '',
+        'type'        => 'textarea-simple',
+        'section'     => 'ajax_navigation',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'typekit_kit_id',
+        'label'       => __( 'Typekit Kit ID', 'helium' ),
+        'desc'        => __( 'Enter here your Typekit Kit ID.', 'helium' ),
+        'std'         => '',
+        'type'        => 'text',
+        'section'     => 'typekit',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'typekit_cache',
+        'label'       => __( 'Cache', 'helium' ),
+        'desc'        => __( 'Turn off Typekit data cache to always update your kit data. It\'s useful when developing the site but make sure to turn it back on in production mode.', 'helium' ),
+        'std'         => 'on',
+        'type'        => 'on-off',
+        'section'     => 'typekit',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
         'id'          => 'twitter_api_keys',
         'label'       => __( 'Twitter API Keys', 'helium' ),
         'desc'        => __( 'Before using Twitter widgets throughout the site, you need to register your API keys by following the instructions below.
@@ -209,6 +262,21 @@ See this for available buttons: <a href="http://www.addthis.com/services/list">w
         'operator'    => 'and'
       ),
       array(
+        'id'          => 'portfolio_slug',
+        'label'       => __( 'Portfolio Slug', 'helium' ),
+        'desc'        => __( 'Specify here the portfolio post type slug. Default is <strong>portfolio</strong>.', 'helium' ),
+        'std'         => 'portfolio',
+        'type'        => 'text',
+        'section'     => 'post_type_slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
         'id'          => 'envato_credentials',
         'label'       => __( 'Envato Credentials', 'helium' ),
         'desc'        => __( 'Enter your Envato Market credentials below to access the demo content importer and get automatic theme update notifications directly from WordPress admin.', 'helium' ),
@@ -259,21 +327,6 @@ See this for available buttons: <a href="http://www.addthis.com/services/list">w
         'desc'        => __( 'Enter here your custom CSS code to be applied to the whole site.', 'helium' ),
         'std'         => '',
         'type'        => 'css',
-        'section'     => 'miscellaneous',
-        'rows'        => '',
-        'post_type'   => '',
-        'taxonomy'    => '',
-        'min_max_step'=> '',
-        'class'       => '',
-        'condition'   => '',
-        'operator'    => 'and'
-      ),
-      array(
-        'id'          => 'favicon',
-        'label'       => __( 'Favicon', 'helium' ),
-        'desc'        => __( 'Upload here your site favicon', 'helium' ),
-        'std'         => '',
-        'type'        => 'upload',
         'section'     => 'miscellaneous',
         'rows'        => '',
         'post_type'   => '',

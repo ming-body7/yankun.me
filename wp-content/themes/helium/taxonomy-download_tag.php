@@ -11,10 +11,10 @@ get_header();
 
 		<div class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 				?><h1 class="content-title">
-					<?php single_term_title( helium_get_option( 'edd_archive_page_title' ) . ': ' ); ?>
+					<?php single_term_title( Youxi()->option->get( 'edd_archive_page_title' ) . ': ' ); ?>
 				</h1>
 
 			</div>
@@ -101,13 +101,13 @@ get_header();
 									else: ?>
 									<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" class="edd-download-view-details" itemprop="url">
 										<i class="fa fa-external-link"></i>
-										<?php _e( 'Details', 'helium' ); ?>
+										<?php esc_html_e( 'Details', 'helium' ); ?>
 									</a>
 									<?php endif; ?>
 								</div>
 
 								<div class="edd-download-info">
-									<?php the_title( '<h3 class="entry-title edd-download-title" itemprop="name"><a href="' . get_permalink() . '" itemprop="url">', '</a></h3>' ); ?>
+									<?php the_title( '<h3 class="entry-title edd-download-title" itemprop="name"><a href="' . esc_url( get_permalink() ) . '" itemprop="url">', '</a></h3>' ); ?>
 									<p class="edd-download-price" itemprop="price"><?php
 										if( ! edd_has_variable_prices( get_the_ID() ) ):
 											edd_price( get_the_ID() );
@@ -131,7 +131,7 @@ get_header();
 				if( 'show_all' != $grid_settings['pagination'] ):
 
 					echo '<div class="grid-list-nav">';
-						helium_posts_pagination( $grid_settings['pagination'] );
+						helium_entry_pagination( $grid_settings['pagination'] );
 					echo '</div>';
 					
 				endif; ?>

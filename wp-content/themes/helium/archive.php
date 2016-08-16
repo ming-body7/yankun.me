@@ -2,11 +2,11 @@
 
 ?><div class="content-area-wrap">
 
-	<div class="content-area <?php echo esc_attr( helium_get_option( 'blog_archive_layout' ) ) ?>">
+	<div class="content-area <?php echo esc_attr( Youxi()->option->get( 'blog_archive_layout' ) ) ?>">
 
 		<div class="content-header">
 
-			<div class="content-header-affix"><?php
+			<div class="content-header-affix clearfix"><?php
 
 					$the_title = '';
 
@@ -20,18 +20,18 @@
 						$strtr = array( '{author}' => get_the_author() );
 						$ot_prefix = 'blog_author';
 					elseif( is_day() ):
-						$strtr = array( '{date}' => get_the_date( __( 'F d, Y', 'helium' ) ) );
+						$strtr = array( '{date}' => get_the_date( 'F d, Y' ) );
 						$ot_prefix = 'blog_date';
 					elseif( is_month() ):
-						$strtr = array( '{date}' => get_the_date( __( 'F, Y', 'helium' ) ) );
+						$strtr = array( '{date}' => get_the_date( 'F, Y' ) );
 						$ot_prefix = 'blog_date';
 					elseif( is_year() ):
-						$strtr = array( '{date}' => get_the_date( __( 'Y', 'helium' ) ) );
+						$strtr = array( '{date}' => get_the_date( 'Y' ) );
 						$ot_prefix = 'blog_date';
 					endif;
 
 					if( isset( $strtr, $ot_prefix ) ):
-						$the_title = strtr( helium_get_option( $ot_prefix . '_title' ), $strtr );
+						$the_title = strtr( Youxi()->option->get( $ot_prefix . '_title' ), $strtr );
 					else:
 						$the_title = esc_html__( 'Archive', 'helium' );
 					endif;
@@ -48,10 +48,10 @@
 
 			<?php
 			while( have_posts() ) : the_post();
-				get_template_part( 'template-parts/post/default/entry', get_post_format() );
+				Youxi()->templates->get( 'entry', get_post_format(), get_post_type() );
 			endwhile;
 
-			helium_posts_pagination(); ?>
+			helium_entry_pagination(); ?>
 
 		</div>
 

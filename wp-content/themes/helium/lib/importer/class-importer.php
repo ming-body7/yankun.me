@@ -16,7 +16,7 @@ function handle_nav_menu_locations( $data ) {
 	}
 
 	if( empty( $new_menu_locations ) ) {
-		return __( 'No nav menu locations updated', 'youxi' );
+		return esc_html__( 'No nav menu locations updated', 'youxi' );
 	}
 
 	set_theme_mod( 'nav_menu_locations', 
@@ -28,7 +28,7 @@ function handle_nav_menu_locations( $data ) {
 	}
 
 	return empty( $result ) ? 
-		__( 'No nav menu locations updated', 'youxi' ) : implode( ', ', $result );
+		esc_html__( 'No nav menu locations updated', 'youxi' ) : implode( ', ', $result );
 }
 
 function handle_frontpage_displays( $data ) {
@@ -54,28 +54,36 @@ function handle_frontpage_displays( $data ) {
 	}
 
 	return empty( $result ) ? 
-		__( 'Frontpage display settings not imported.', 'youxi' ) : implode( ', ', $result );
+		esc_html__( 'Frontpage display settings not imported.', 'youxi' ) : implode( ', ', $result );
 }
 
-function handle_xml_import( $data ) {
+function handle_wp_import( $data ) {
 
 	if( ! class_exists( 'WP_Import' ) ) {
 		$wp_importer = get_template_directory() . '/lib/vendor/wordpress-importer/wordpress-importer.php';
 		if( is_readable( $wp_importer ) ) {
 			require $wp_importer;
 		} else {
-			return new WP_Error( 'xml_wp_importer_missing', __( 'The WordPress importer class can\'t be found.', 'youxi' ) );
+			return new WP_Error( 'wp_importer_missing', esc_html__( 'The WordPress importer class can\'t be found.', 'youxi' ) );
 		}
 	}
 
+	$data = wp_parse_args( $data, array(
+		'xml' => '', 
+		'attachments_baseurl' => '', 
+		'attachments_dir' => ''
+	));
+
 	// Import the content
 	$wp_import = new WP_Import();
+	$wp_import->attachments_baseurl = $data['attachments_baseurl'];
+	$wp_import->attachments_dir = $data['attachments_dir'];
 	$wp_import->fetch_attachments = true;
 
 	ob_start();
 
 	set_time_limit(0);
-	$wp_import->import( $data );
+	$wp_import->import( $data['xml'] );
 
 	return ob_get_clean();
 }
@@ -87,7 +95,7 @@ function handle_widgets_import( $data ) {
 
 		$data = json_decode( $data, true );
 		if( empty( $data ) || ! is_array( $data ) ) {
-			return new WP_Error( 'widgets_invalid_data', __( 'Widgets import data could not be read.', 'youxi' ) );
+			return new WP_Error( 'widgets_invalid_data', esc_html__( 'Widgets import data could not be read.', 'youxi' ) );
 		}
 	}
 
@@ -133,7 +141,7 @@ function handle_widgets_import( $data ) {
 			$sidebar_available = false;
 			$use_sidebar_id = 'wp_inactive_widgets'; // add to inactive if sidebar does not exist in theme
 			$sidebar_message_type = 'error';
-			$sidebar_message = __( 'Sidebar does not exist in theme (using Inactive)', 'youxi' );
+			$sidebar_message = esc_html__( 'Sidebar does not exist in theme (using Inactive)', 'youxi' );
 		}
 
 		// Result for sidebar
@@ -155,7 +163,7 @@ function handle_widgets_import( $data ) {
 			if ( ! $fail && ! isset( $available_widgets[$id_base] ) ) {
 				$fail = true;
 				$widget_message_type = 'error';
-				$widget_message = __( 'Site does not support widget', 'youxi' ); // explain why widget not imported
+				$widget_message = esc_html__( 'Site does not support widget', 'youxi' ); // explain why widget not imported
 			}
 
 			// Does widget with identical settings already exist in same sidebar?
@@ -174,7 +182,7 @@ function handle_widgets_import( $data ) {
 
 						$fail = true;
 						$widget_message_type = 'warning';
-						$widget_message = __( 'Widget already exists', 'youxi' ); // explain why widget not imported
+						$widget_message = esc_html__( 'Widget already exists', 'youxi' ); // explain why widget not imported
 
 						break;
 
@@ -223,17 +231,17 @@ function handle_widgets_import( $data ) {
 				// Success message
 				if ( $sidebar_available ) {
 					$widget_message_type = 'success';
-					$widget_message = __( 'Imported', 'youxi' );
+					$widget_message = esc_html__( 'Imported', 'youxi' );
 				} else {
 					$widget_message_type = 'warning';
-					$widget_message = __( 'Imported to Inactive', 'youxi' );
+					$widget_message = esc_html__( 'Imported to Inactive', 'youxi' );
 				}
 
 			}
 
 			// Result for widget instance
 			$results[$sidebar_id]['widgets'][$widget_instance_id]['name'] = isset( $available_widgets[$id_base]['name'] ) ? $available_widgets[$id_base]['name'] : $id_base; // widget name or ID if name not available (not supported by site)
-			$results[$sidebar_id]['widgets'][$widget_instance_id]['title'] = $widget->title ? $widget->title : __( 'No Title', 'youxi' ); // show "No Title" if widget instance is untitled
+			$results[$sidebar_id]['widgets'][$widget_instance_id]['title'] = isset( $widget['title'] ) && $widget['title'] ? $widget['title'] : esc_html__( 'No Title', 'youxi' ); // show "No Title" if widget instance is untitled
 			$results[$sidebar_id]['widgets'][$widget_instance_id]['message_type'] = $widget_message_type;
 			$results[$sidebar_id]['widgets'][$widget_instance_id]['message'] = $widget_message;
 
@@ -247,45 +255,56 @@ function handle_widgets_import( $data ) {
 function handle_ot_import( $data ) {
 
 	if( ! class_exists( 'OT_Loader' ) ) {
-		return new WP_Error( 'theme_options_ot_not_found', __( 'Option Tree is not installed, theme options not imported.', 'youxi' ) );
+		return new WP_Error( 'theme_options_ot_not_found', esc_html__( 'Option Tree is not installed, theme options not imported.', 'youxi' ) );
 	}
 
 	try {
 
-		/* textarea value */
+		/* decode the theme options data */
 		$options = unserialize( ot_decode( $data ) );
-
-		/* get settings array */
-		$settings = get_option( ot_settings_id() );
 
 		/* has options */
 		if ( is_array( $options ) ) {
-
-			/* validate options */
-			if ( is_array( $settings ) ) {
-
-				foreach( $settings['settings'] as $setting ) {
-
-					if ( isset( $options[$setting['id']] ) ) {
-
-						$content = ot_stripslashes( $options[$setting['id']] );
-
-						$options[$setting['id']] = ot_validate_setting( $content, $setting['type'], $setting['id'] );
-
-					}
-
-				}
-
-			}
-
-			/* update the option tree array */
+			/* update the option tree options */
 			update_option( ot_options_id(), $options );
+		} else {
+			return new WP_Error( 'theme_options_invalid_data', esc_html__( 'The supplied theme options data is invalid.', 'youxi' ) );	
 		}
+
 	} catch( Exception $e ) {
 		return new WP_Error( 'theme_options_unknown_error', $e->getMessage() );
 	}
 
-	return __( 'Theme options successfully imported.', 'youxi' );
+	return esc_html__( 'Theme options successfully imported.', 'youxi' );
+}
+
+function handle_customizer_import( $data ) {
+
+	$data = wp_parse_args( $data, array(
+		'data' => '', 
+		'type' => 'theme_mod', 
+		'key'  => ''
+	));
+
+	try {
+
+		$options = unserialize( $data['data'] );
+
+		if( is_array( $options ) ) {
+			if( 'theme_mod' == $data['type'] ) {
+				set_theme_mod( $data['key'], $options );
+			} else {
+				update_option( $data['key'], $options );
+			}
+		} else {
+			return new WP_Error( 'customizer_options_invalid_data', esc_html__( 'The supplied customizer options data is invalid.', 'youxi' ) );	
+		}
+
+	} catch( Exception $e ) {
+		return new WP_Error( 'customizer_options_unknown_error', $e->getMessage() );
+	}
+
+	return esc_html__( 'Customizer options successfully imported.', 'youxi' );
 }
 
 final class Youxi_Demo_Importer_Page {
@@ -306,7 +325,7 @@ final class Youxi_Demo_Importer_Page {
 	public function admin_menu() {
 
 		$this->page_hook = add_management_page(
-			__( 'Youxi Demo Content Importer', 'youxi' ), __( 'Youxi Importer', 'youxi' ), 
+			esc_html__( 'Youxi Demo Content Importer', 'youxi' ), esc_html__( 'Youxi Importer', 'youxi' ), 
 			'import', 'youxi-importer', array( $this, 'importer_page_callback' )
 		);
 	}
@@ -345,18 +364,18 @@ final class Youxi_Demo_Importer_Page {
 	public function wp_ajax_handle_import() {
 
 		if( ! isset( $_POST['task'] ) ) {
-			$this->wp_ajax_error( __( 'Invalid request.', 'youxi' ) );
+			$this->wp_ajax_error( esc_html__( 'Invalid request.', 'youxi' ) );
 		}
 
 		$task = wp_parse_args( $_POST['task'], array( 'task_id' => '', 'demo_id' => '' ) );
 
 		$available_demos = $this->get_available_demos();
 		if( ! array_key_exists( $task['demo_id'], $available_demos ) ) {
-			$this->wp_ajax_error( __( 'Invalid demo content requested.', 'youxi' ) );
+			$this->wp_ajax_error( esc_html__( 'Invalid demo content requested.', 'youxi' ) );
 		}
 
 		if( ! in_array( $task['task_id'], array_keys( $this->get_import_tasks() ) ) ) {
-			$this->wp_ajax_error( __( 'Invalid import task.', 'youxi' ) );
+			$this->wp_ajax_error( esc_html__( 'Invalid import task.', 'youxi' ) );
 		}
 
 		check_ajax_referer( 'import_demo_' . $task['demo_id'] );
@@ -374,11 +393,7 @@ final class Youxi_Demo_Importer_Page {
 			wp_send_json_success( compact( 'result' ) );
 
 		} else {
-			if( is_wp_error( $result ) ) {
-				$this->wp_ajax_error( $result->get_error_message() );
-			} else {
-				$this->wp_ajax_error( __( 'An unknown error has occured.', 'youxi' ) );
-			}
+			$this->wp_ajax_error( $result->get_error_message() );
 		}
 	}
 
@@ -397,7 +412,7 @@ final class Youxi_Demo_Importer_Page {
 				if( is_callable( $handler ) ) {
 					return call_user_func( $handler, $current_demo['content'][ $task_id ] );
 				} else {
-					return new WP_Error( 'importer_invalid_task', sprintf( __( 'The handler for the task %s is invalid.', 'youxi' ), $task_id ) );
+					return new WP_Error( 'importer_invalid_task', sprintf( esc_html__( 'The handler for the task %s is invalid.', 'youxi' ), $task_id ) );
 				}
 			}
 		}
@@ -409,24 +424,28 @@ final class Youxi_Demo_Importer_Page {
 
 	public function get_import_tasks() {
 		return apply_filters( 'youxi_demo_importer_tasks', array(
-			'xml' => array(
-				'status' => __( 'Importing posts, pages, comments, custom fields, categories, and tags.', 'youxi' ), 
-				'handler' => 'handle_xml_import'
+			'wp' => array(
+				'status'  => esc_html__( 'Importing posts, pages, comments, custom fields, categories, and tags.', 'youxi' ), 
+				'handler' => 'handle_wp_import'
 			), 
 			'theme-options' => array(
-				'status' => __( 'Importing theme options', 'youxi' ), 
+				'status'  => esc_html__( 'Importing theme options', 'youxi' ), 
 				'handler' => 'handle_ot_import'
 			), 
+			'customizer-options' => array(
+				'status'  => esc_html__( 'Importing customizer options', 'youxi' ), 
+				'handler' => 'handle_customizer_import'
+			), 
 			'widgets' => array(
-				'status' => __( 'Importing widgets', 'youxi' ), 
+				'status'  => esc_html__( 'Importing widgets', 'youxi' ), 
 				'handler' => 'handle_widgets_import'
 			), 
 			'frontpage_displays' => array(
-				'status' => __( 'Importing front page options', 'youxi' ), 
+				'status'  => esc_html__( 'Importing front page options', 'youxi' ), 
 				'handler' => 'handle_frontpage_displays'
 			), 
 			'nav_menu_locations' => array(
-				'status' => __( 'Importing nav menu locations', 'youxi' ), 
+				'status'  => esc_html__( 'Importing nav menu locations', 'youxi' ), 
 				'handler' => 'handle_nav_menu_locations'
 			)
 		));
@@ -444,10 +463,10 @@ final class Youxi_Demo_Importer_Page {
 			'ajaxUrl'                  => admin_url( 'admin-ajax.php' ), 
 			'ajaxAction'               => 'youxi_import_demo', 
 			'importTasks'              => $this->get_import_tasks(), 
-			'doneMessage'              => __( 'Import Completed', 'youxi' ), 
-			'failMessage'              => __( 'Import Failed', 'youxi' ), 
-			'hasPreviousImportMessage' => __( 'You have previously imported a demo content, are you sure you want to import again?' ), 
-			'beforeUnloadMessage'      => __( 'You haven\'t finishid importing the demo content. If you leave now, the demo content will not be imported.', 'youxi' ), 
+			'successMessage'           => esc_html__( 'Import Completed Successfully', 'youxi' ), 
+			'failureMessage'           => esc_html__( 'Import Completed with {count} Failure(s)', 'youxi' ), 
+			'hasPreviousImportMessage' => esc_html__( 'You have previously imported a demo content, are you sure you want to import again?', 'youxi' ), 
+			'beforeUnloadMessage'      => esc_html__( 'You haven\'t finishid importing the demo content. If you leave now, the demo content will not be imported.', 'youxi' ), 
 			'importFinishTimeout'      => 2000, 
 			'importDebug'              => defined( 'WP_DEBUG' ) && WP_DEBUG, 
 			'hasPreviousImport'        => get_option( '_youxi_demo_importer_has_import', false )
@@ -458,7 +477,7 @@ final class Youxi_Demo_Importer_Page {
 		?>
 		<div class="wrap demo-importer">
 
-			<h2><?php _e( 'Youxi Demo Content Importer', 'youxi' ) ?></h2>
+			<h2><?php esc_html_e( 'Youxi Demo Content Importer', 'youxi' ) ?></h2>
 
 			<?php if( $available_demos = $this->get_available_demos() ): ?>
 
@@ -473,7 +492,7 @@ final class Youxi_Demo_Importer_Page {
 						));
 					?>
 
-					<div class="theme demo-content active" tabindex="0" data-demo-id="<?php echo esc_attr( $id ) ?>" data-wp-nonce="<?php echo wp_create_nonce( 'import_demo_' . $id ) ?>">
+					<div class="theme demo-content active" tabindex="0" data-demo-id="<?php echo esc_attr( $id ) ?>" data-wp-nonce="<?php echo esc_attr( wp_create_nonce( 'import_demo_' . $id ) ); ?>">
 
 						<div class="theme-screenshot demo-screenshot">
 							<img src="<?php echo esc_url( $args['screenshot'] ) ?>" alt="<?php echo esc_attr( $args['name'] ) ?>">
@@ -484,7 +503,7 @@ final class Youxi_Demo_Importer_Page {
 						<h3 class="theme-name demo-name"><?php echo esc_html( $args['name'] ) ?></h3>
 
 						<div class="theme-actions demo-actions">
-							<button type="button" class="button button-primary"><?php _e( 'Import', 'youxi' ) ?></button>
+							<button type="button" class="button button-primary"><?php esc_html_e( 'Import', 'youxi' ) ?></button>
 						</div>
 
 					</div>
@@ -498,7 +517,7 @@ final class Youxi_Demo_Importer_Page {
 			</div>
 
 			<?php else:
-				echo '<div class="error settings-error"><p>' . __( 'There are no available demo content to import.', 'youxi' ) . '</p></div>';
+				echo '<div class="error settings-error"><p>' . esc_html__( 'There are no available demo content to import.', 'youxi' ) . '</p></div>';
 			endif;
 			?>
 		</div>

@@ -1,6 +1,6 @@
 
 /* ==========================================================================
-	6.1 Grid List Filter
+	8.1 Grid List Filter
 ============================================================================= */
 
 .grid-list-filter {
@@ -15,11 +15,11 @@
 		margin-right: @gridlist-filter-spacing;
 		background-color: #fff;
 		text-transform: uppercase;
+		letter-spacing: 1px;
 		border-bottom: 1px solid @base-border-color;
 	}
 
 	.filter-items {
-		&:extend(ul.plain-list);
 		display: none;
 		li {
 			display: block;
@@ -34,17 +34,27 @@
 				padding: 8px 20px;
 				display: block;
 				position: relative;
+
+				&.disabled {
+					opacity: 0.5;
+					pointer-events: none;
+				}
 			}
-			&:hover > a, > a.active {
+			&:hover > a, 
+			> a.active {
 				color: #fff;
 				background-color: @brand-primary;
+				&.disabled {
+					color: @text-color;
+					background-color: transparent;
+				}
 			}
 		}
 	}
 }
 
 /* ==========================================================================
-	6.2 Grid List Item
+	8.2 Grid List Item
 ============================================================================= */
 
 .grid-list {
@@ -104,7 +114,7 @@
 }
 
 /* ==========================================================================
-	6.3 Grid List Classic
+	8.3 Grid List Classic
 ============================================================================= */
 
 .grid-list-classic {
@@ -126,7 +136,7 @@
 }
 
 /* ==========================================================================
-	6.4 Grid List Justified
+	8.4 Grid List Justified
 ============================================================================= */
 
 .grid-list-justified {
@@ -137,7 +147,7 @@
 }
 
 /* ==========================================================================
-	6.5 Grid List Masonry
+	8.5 Grid List Masonry
 ============================================================================= */
 
 .grid-list-masonry {
@@ -164,7 +174,7 @@
 }
 
 /* ==========================================================================
-	6.6 Grid List Image
+	8.6 Grid List Image
 ============================================================================= */
 
 .grid-list-image {
@@ -219,7 +229,7 @@
 }
 
 /* ==========================================================================
-	6.7 Grid List Nav
+	8.7 Grid List Nav
 ============================================================================= */
 
 .grid-list-nav {

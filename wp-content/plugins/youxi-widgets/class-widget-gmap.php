@@ -7,7 +7,7 @@ class Youxi_Google_Maps_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'google-maps-widget', 'description' => __( 'Use this widget to display a Google Map.', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-google-maps-widget', 'description' => __( 'Use this widget to display a Google Map.', 'youxi' ) );
 		$control_opts = array( 'width' => '400px' );
 
 		// Initialize WP_Widget

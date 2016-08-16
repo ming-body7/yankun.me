@@ -17,7 +17,7 @@ $status    = edd_get_payment_status( $payment, true );
 
 		<?php if ( $edd_receipt_args['payment_id'] ) : ?>
 		<tr>
-			<th><strong><?php _e( 'Payment', 'helium' ); ?>:</strong></th>
+			<th><strong><?php esc_html_e( 'Payment', 'helium' ); ?>:</strong></th>
 			<th><?php echo edd_get_payment_number( $payment->ID ); ?></th>
 		</tr>
 		<?php endif; ?>
@@ -26,33 +26,33 @@ $status    = edd_get_payment_status( $payment, true );
 	<tbody>
 
 		<tr>
-			<td class="edd_receipt_payment_status"><strong><?php _e( 'Payment Status', 'helium' ); ?>:</strong></td>
+			<td class="edd_receipt_payment_status"><strong><?php esc_html_e( 'Payment Status', 'helium' ); ?>:</strong></td>
 			<td class="edd_receipt_payment_status <?php echo strtolower( $status ); ?>"><?php echo $status; ?></td>
 		</tr>
 
 		<?php if ( $edd_receipt_args['payment_key'] ) : ?>
 			<tr>
-				<td><strong><?php _e( 'Payment Key', 'helium' ); ?>:</strong></td>
+				<td><strong><?php esc_html_e( 'Payment Key', 'helium' ); ?>:</strong></td>
 				<td><?php echo get_post_meta( $payment->ID, '_edd_payment_purchase_key', true ); ?></td>
 			</tr>
 		<?php endif; ?>
 
 		<?php if ( $edd_receipt_args['payment_method'] ) : ?>
 			<tr>
-				<td><strong><?php _e( 'Payment Method', 'helium' ); ?>:</strong></td>
+				<td><strong><?php esc_html_e( 'Payment Method', 'helium' ); ?>:</strong></td>
 				<td><?php echo edd_get_gateway_checkout_label( edd_get_payment_gateway( $payment->ID ) ); ?></td>
 			</tr>
 		<?php endif; ?>
 		<?php if ( $edd_receipt_args['date'] ) : ?>
 		<tr>
-			<td><strong><?php _e( 'Date', 'helium' ); ?>:</strong></td>
+			<td><strong><?php esc_html_e( 'Date', 'helium' ); ?>:</strong></td>
 			<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $meta['date'] ) ); ?></td>
 		</tr>
 		<?php endif; ?>
 
 		<?php if ( ( $fees = edd_get_payment_fees( $payment->ID, 'fee' ) ) ) : ?>
 		<tr>
-			<td><strong><?php _e( 'Fees', 'helium' ); ?>:</strong></td>
+			<td><strong><?php esc_html_e( 'Fees', 'helium' ); ?>:</strong></td>
 			<td>
 				<ul class="edd_receipt_fees">
 				<?php foreach( $fees as $fee ) : ?>
@@ -69,14 +69,14 @@ $status    = edd_get_payment_status( $payment, true );
 
 		<?php if ( $edd_receipt_args['discount'] && $user['discount'] != 'none' ) : ?>
 			<tr>
-				<td><strong><?php _e( 'Discount(s)', 'helium' ); ?>:</strong></td>
+				<td><strong><?php esc_html_e( 'Discount(s)', 'helium' ); ?>:</strong></td>
 				<td><?php echo $user['discount']; ?></td>
 			</tr>
 		<?php endif; ?>
 
 		<?php if( edd_use_taxes() ) : ?>
 			<tr>
-				<td><strong><?php _e( 'Tax', 'helium' ); ?></strong></td>
+				<td><strong><?php esc_html_e( 'Tax', 'helium' ); ?></strong></td>
 				<td><?php echo edd_payment_tax( $payment->ID ); ?></td>
 			</tr>
 		<?php endif; ?>
@@ -84,14 +84,14 @@ $status    = edd_get_payment_status( $payment, true );
 		<?php if ( $edd_receipt_args[ 'price' ] ) : ?>
 
 			<tr>
-				<td><strong><?php _e( 'Subtotal', 'helium' ); ?></strong></td>
+				<td><strong><?php esc_html_e( 'Subtotal', 'helium' ); ?></strong></td>
 				<td>
 					<?php echo edd_payment_subtotal( $payment->ID ); ?>
 				</td>
 			</tr>
 
 			<tr>
-				<td><strong><?php _e( 'Total Price', 'helium' ); ?>:</strong></td>
+				<td><strong><?php esc_html_e( 'Total Price', 'helium' ); ?>:</strong></td>
 				<td><?php echo edd_payment_amount( $payment->ID ); ?></td>
 			</tr>
 
@@ -105,18 +105,18 @@ $status    = edd_get_payment_status( $payment, true );
 
 <?php if ( $edd_receipt_args[ 'products' ] ) : ?>
 
-	<h3><?php echo apply_filters( 'edd_payment_receipt_products_title', __( 'Products', 'helium' ) ); ?></h3>
+	<h3><?php echo apply_filters( 'edd_payment_receipt_products_title', esc_html__( 'Products', 'helium' ) ); ?></h3>
 
 	<table id="edd_purchase_receipt_products" class="table table-striped table-bordered">
 		<thead>
-			<th><?php _e( 'Name', 'helium' ); ?></th>
+			<th><?php esc_html_e( 'Name', 'helium' ); ?></th>
 			<?php if ( edd_use_skus() ): 
-			?><th><?php _e( 'SKU', 'helium' ); ?></th>
+			?><th><?php esc_html_e( 'SKU', 'helium' ); ?></th>
 			<?php endif; ?>
 			<?php if ( edd_item_quantities_enabled() ): 
-			?><th><?php _e( 'Quantity', 'helium' ); ?></th>
+			?><th><?php esc_html_e( 'Quantity', 'helium' ); ?></th>
 			<?php endif; ?>
-			<th><?php _e( 'Price', 'helium' ); ?></th>
+			<th><?php esc_html_e( 'Price', 'helium' ); ?></th>
 		</thead>
 
 		<tbody>
@@ -188,7 +188,7 @@ $status    = edd_get_payment_status( $payment, true );
 
 												endforeach;
 											else :
-												echo '<li>' . __( 'No downloadable files found for this bundled item.', 'helium' ) . '</li>';
+												echo '<li>' . esc_html__( 'No downloadable files found for this bundled item.', 'helium' ) . '</li>';
 											endif;
 											?>
 										</ul>
@@ -197,7 +197,7 @@ $status    = edd_get_payment_status( $payment, true );
 								endforeach;
 
 							else :
-								echo '<li>' . __( 'No downloadable files found.', 'helium' ) . '</li>';
+								echo '<li>' . esc_html__( 'No downloadable files found.', 'helium' ) . '</li>';
 							endif; ?>
 						</ul>
 						<?php endif; ?>

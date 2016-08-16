@@ -42,14 +42,20 @@ blockquote {
 	margin: 0;
 	padding: 20px 0 20px 40px;
 	border: none;
+	line-height: 1.5;
 	position: relative;
-	p, small {
+	p, small, footer {
 		position: relative;
 		z-index: 1;
 	}
 	p {
 		font-family: @quote-blockquote-font-family;
 		font-style: @quote-blockquote-font-style;
+		font-size: @quote-blockquote-font-size;
+	}
+	small, footer {
+		margin-top: 1em;
+		font-size: @font-size-base;
 	}
 	&:before {
 		font-size: 12em;
@@ -68,26 +74,30 @@ blockquote {
 	1.2 Heading Styles
 ============================================================================= */
 
-h1, h2 {
+h1, h2, .h1, .h2 {
 	margin-top: 1em;
 	margin-bottom: 0.625em;
 }
 
-h3, h4, h5, h6 {
+h3, h4, h5, h6, 
+.h3, .h4, .h5, .h6 {
 	margin-top: 1.625em;
 	margin-bottom: 1em;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, 
+.h1, .h2, .h3, .h4 {
 	font-weight: 700;
 }
 
-h5, h6 {
+h5, h6, .h5, .h6 {
 	font-weight: 500;
 }
 
 h1, h2, h3, 
-h4, h5, h6 {
+h4, h5, h6, 
+.h1, .h2, .h3, 
+.h4, .h5, .h6 {
 	&.bordered, 
 	&.striped {
 		padding: 0 0 0.625em;

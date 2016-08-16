@@ -29,7 +29,7 @@ if( ! class_exists( 'Pixelentity_Themes_Updater' ) ) {
 			}
 
 			if( ! class_exists( 'Envato_Protected_API' ) ) {
-				require( 'vendor/class-envato-protected-api.php' );
+				require_once( 'vendor/class-envato-protected-api.php' );
 			}
 
 			add_filter( 'http_request_args', array( $this, 'http_timeout' ), 10, 1 );
@@ -55,7 +55,7 @@ if( ! class_exists( 'Pixelentity_Themes_Updater' ) ) {
 					// gotcha, compare version now
 					$current = $filtered[ $theme->theme_name ];
 
-					if( version_compare( $current->Version, $theme->version, '< ') ) {
+					if( version_compare( $current->Version, $theme->version, '<' ) ) {
 						
 						// bingo, inject the update
 						if( $url = $api->wp_download( $theme->item_id ) ) {

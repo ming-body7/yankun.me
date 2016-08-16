@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * This class creates an image uploader using WordPress 3.5 media uploader.
  *
  * @package   Youxi Core
- * @author    Mairel Theafila <maimairel@yahoo.com>
- * @copyright Copyright (c) 2013, Mairel Theafila
+ * @author    Mairel Theafila <maimairel@gmail.com>
+ * @copyright Copyright (c) 2013-2015, Mairel Theafila
  */
 if( ! class_exists( 'Youxi_Image_Form_Field' ) ) {
 
@@ -96,7 +96,7 @@ if( ! class_exists( 'Youxi_Image_Form_Field' ) ) {
 			}
 
 			return $this->get_option( 'multiple' ) ? 
-				$sanitized : ( isset( $sanitized[0] ) ? $sanitized[0] : array() );
+				$sanitized : ( isset( $sanitized[0] ) ? $sanitized[0] : '' );
 		}
 
 		/**
@@ -127,19 +127,17 @@ if( ! class_exists( 'Youxi_Image_Form_Field' ) ) {
 			if( ! self::$media_template_printed ) {
 				self::$media_template_printed = true;
 ?>
-
-	<script type="text/html" id="tmpl-youxi-media-field">
-		<div class="youxi-media-preview-item">
-			<div class="youxi-media-preview-img-wrap">
-				<div class="youxi-media-preview-img-wrap-inner">
-					<img src="{{ data.imageURL }}" alt="">
-				</div>
+<script type="text/html" id="tmpl-youxi-media-field">
+	<div class="youxi-media-preview-item">
+		<div class="youxi-media-preview-img-wrap">
+			<div class="youxi-media-preview-img-wrap-inner">
+				<img src="{{ data.url }}" alt="">
 			</div>
-			<input type="hidden" name="{{ data.fieldName }}{{ data.fieldNamePostfix }}" value="{{ data.imageID }}">
-			<button type="button" class="youxi-media-preview-remove">&times;</button>
 		</div>
-	</script>
-
+		<input type="hidden" name="{{ data.fieldName }}{{ data.fieldNamePostfix }}" value="{{ data.id }}">
+		<button type="button" class="youxi-media-preview-remove">&times;</button>
+	</div>
+</script>
 <?php
 			}
 		}
@@ -154,7 +152,10 @@ if( ! class_exists( 'Youxi_Image_Form_Field' ) ) {
 		 */
 		public function get_the_field( $value, $attributes = array() ) {
 
+			$has_items = false;
+
 			$o = '<div id="' . $this->get_the_ID() . '"' . Youxi_Form::render_attr( $attributes ) . '>';
+
 				$o .= '<div class="youxi-media-previews">';
 					foreach( (array) $value as $val ): 
 
@@ -169,6 +170,8 @@ if( ! class_exists( 'Youxi_Image_Form_Field' ) ) {
 
 						if( ! isset( $url ) || empty( $url ) )
 							continue;
+
+						$has_items = true;
 
 					$o .= '<div class="youxi-media-preview-item">';
 						$o .= '<div class="youxi-media-preview-img-wrap">';
@@ -187,6 +190,8 @@ if( ! class_exists( 'Youxi_Image_Form_Field' ) ) {
 				if( ! $this->get_option( 'multiple' ) && ! empty( $value ) ) {
 					$button_atts['style'] = 'display: none;';
 				}
+
+				$o .= '<input type="hidden" class="youxi-media-no-item skip-criteria-check" name="' . $this->get_the_name() . '" value=""' . ( $has_items ? ' disabled' : '' ) . '>';
 
 				$o .= '<button type="button" class="youxi-media-button"' . Youxi_Form::render_attr( $button_atts ) . '>+</button>';
 			$o .= '</div>';

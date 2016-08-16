@@ -19,24 +19,24 @@ abstract class Youxi_WP_Widget extends WP_Widget {
 
 	public function enqueue() {
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$is_active_widget = is_active_widget( false, false, $this->id_base, true );
 
-		if( ! wp_script_is( 'youxi-widgets', 'registered' ) ) {
+		if( ! wp_script_is( 'youxi-widgets' ) ) {
 
-			wp_register_script( 'youxi-widgets', self::frontend_scripts_url( "youxi.widgets{$suffix}.js" ), array( 'jquery' ), '1.0', true );
-			wp_localize_script( 'youxi-widgets', '_youxiWidgets', apply_filters( 'youxi_widgets_config_vars', array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' )
-			)));
-		}
+			if( apply_filters( "youxi_widgets_allow_{$this->id_base}_setup", true ) && $is_active_widget ) {
 
-		if( is_active_widget( false, false, $this->id_base, true ) ) {
-			
-			if( apply_filters( "youxi_widgets_allow_{$this->id_base}_setup", true ) ) {
-				wp_enqueue_script( 'youxi-widgets' );
+				$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+				wp_enqueue_script( 'youxi-widgets', self::frontend_scripts_url( "youxi.widgets{$suffix}.js" ), array( 'jquery' ), YOUXI_WIDGETS_VERSION, true );
+				wp_localize_script( 'youxi-widgets', '_youxiWidgets', apply_filters( 'youxi_widgets_config_vars', array(
+					'ajaxUrl' => admin_url( 'admin-ajax.php' )
+				)));
+
 			}
+
 		}
 
-		return apply_filters( "youxi_widgets_{$this->id_base}_enqueue_scripts", true );
+		return apply_filters( "youxi_widgets_{$this->id_base}_enqueue_scripts", $is_active_widget );
 	}
 
 	protected function maybe_load_template( $sidebar_id, $vars ) {
@@ -65,12 +65,13 @@ abstract class Youxi_WP_Widget extends WP_Widget {
 		}
 	}
 
-	public function config_vars( $vars ) {
+	public final function config_vars( $vars ) {
 
-		if( apply_filters( "youxi_widgets_allow_{$this->id_base}_setup", true ) ) {
+		if( apply_filters( "youxi_widgets_allow_{$this->id_base}_setup", true ) && 
+			is_active_widget( false, false, $this->id_base, true ) ) {
 
 			$widget_name = preg_replace( array( '/\W/', '/_?widget_?/' ), '', $this->id_base );
-			$vars[ $widget_name ] = array( 'defaults' => $this->get_defaults() );
+			$vars[ $widget_name ] = (object) $this->get_defaults();
 		}
 
 		return $vars;

@@ -9,7 +9,7 @@ class Youxi_Twitter_Widget extends Youxi_WP_Widget {
 
 	public function __construct() {
 
-		$widget_opts  = array( 'classname' => 'twitter-widget', 'description' => __( 'Use this widget to display your twitter feed.', 'youxi' ) );
+		$widget_opts  = array( 'classname' => 'youxi-twitter-widget', 'description' => __( 'Use this widget to display your twitter feed.', 'youxi' ) );
 		$control_opts = array();
 
 		// Initialize WP_Widget
@@ -132,12 +132,17 @@ class Youxi_Twitter_Widget extends Youxi_WP_Widget {
 
 	public static function get_tweets() {
 		
-		if( ! class_exists( 'YTwitterOAuth' ) ) {
-			require( YOUXI_WIDGETS_DIR . 'twitter/class-twitter-oauth.php' );
-		}
+		if( isset( $_REQUEST['request'] ) ) {
 
-		if( isset( $_POST['request'] ) ) {
-			$request = $_POST['request'];
+			if( ! class_exists( 'YTwitterOAuth' ) ) {
+				require( YOUXI_WIDGETS_DIR . 'api/twitter/class-twitter-oauth.php' );
+			}
+
+			$request = wp_parse_args( $_REQUEST['request'], array(
+				'host' => '', 
+				'url'  => '', 
+				'parameters' => array()
+			));
 
 			// Initialize Twitter Feeds Manager
 			$keys = apply_filters( 'youxi_widgets_twitter_keys', array(
@@ -145,7 +150,7 @@ class Youxi_Twitter_Widget extends Youxi_WP_Widget {
 				'consumer_secret' => '', 
 				'oauth_token' => '', 
 				'oauth_token_secret' => ''
-			) );
+			));
 
 			extract( $keys, EXTR_SKIP );
 
@@ -154,18 +159,15 @@ class Youxi_Twitter_Widget extends Youxi_WP_Widget {
 
 			$response = array( 'response' => null, 'message' => null );
 			
-			if( $tweets )
+			if( $tweets ) {
 				$response['response'] = $tweets;
-			else
+			} else {
 				$response['message'] = $twitter->get_debug_info();
+			}
 
 			wp_send_json( $response );
 		}
 
-		if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-			wp_die();
-		} else {
-			die;
-		}
+		wp_send_json_error();
 	}
 }
