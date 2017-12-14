@@ -36,8 +36,7 @@ class EDD_Tracking {
 	 */
 	public function __construct() {
 
-		$this->schedule_send();
-
+		add_action( 'init', array( $this, 'schedule_send' ) );
 		add_action( 'edd_settings_general_sanitize', array( $this, 'check_for_settings_optin' ) );
 		add_action( 'edd_opt_into_tracking', array( $this, 'check_for_optin' ) );
 		add_action( 'edd_opt_out_of_tracking', array( $this, 'check_for_optout' ) );
@@ -113,7 +112,7 @@ class EDD_Tracking {
 	 * @access private
 	 * @return void
 	 */
-	public function send_checkin( $override = false ) {
+	public function send_checkin( $override = false, $ignore_last_checkin = false ) {
 
 		if( ! $this->tracking_allowed() && ! $override ) {
 			return false;
@@ -121,7 +120,7 @@ class EDD_Tracking {
 
 		// Send a maximum of once per week
 		$last_send = $this->get_last_send();
-		if( ! $last_send || $last_send > strtotime( '-1 week' ) ) {
+		if( is_numeric( $last_send ) && $last_send > strtotime( '-1 week' ) && ! $ignore_last_checkin ) {
 			return false;
 		}
 
@@ -158,7 +157,7 @@ class EDD_Tracking {
 	public function check_for_settings_optin( $input ) {
 		// Send an intial check in on settings save
 
-		if( isset( $input['allow_tracking'] ) ) {
+		if( isset( $input['allow_tracking'] ) && $input['allow_tracking'] == 1 ) {
 			$this->send_checkin( true );
 		}
 
@@ -219,10 +218,10 @@ class EDD_Tracking {
 	/**
 	 * Schedule a weekly checkin
 	 *
-	 * @access private
+	 * @access public
 	 * @return void
 	 */
-	private function schedule_send() {
+	public function schedule_send() {
 		// We send once a week (while tracking is allowed) to check in, which can be used to determine active sites
 		add_action( 'edd_weekly_scheduled_events', array( $this, 'send_checkin' ) );
 	}
@@ -260,7 +259,7 @@ class EDD_Tracking {
 			$optout_url = add_query_arg( 'edd_action', 'opt_out_of_tracking' );
 
 			$source         = substr( md5( get_bloginfo( 'name' ) ), 0, 10 );
-			$extensions_url = 'https://easydigitaldownloads.com/extensions?utm_source=' . $source . '&utm_medium=admin&utm_term=notice&utm_campaign=EDDUsageTracking';
+			$extensions_url = 'https://easydigitaldownloads.com/downloads/?utm_source=' . $source . '&utm_medium=admin&utm_term=notice&utm_campaign=EDDUsageTracking';
 			echo '<div class="updated"><p>';
 				echo sprintf( __( 'Allow Easy Digital Downloads to track plugin usage? Opt-in to tracking and our newsletter and immediately be emailed a 20%% discount to the EDD shop, valid towards the <a href="%s" target="_blank">purchase of extensions</a>. No sensitive data is tracked.', 'easy-digital-downloads' ), $extensions_url );
 				echo '&nbsp;<a href="' . esc_url( $optin_url ) . '" class="button-secondary">' . __( 'Allow', 'easy-digital-downloads' ) . '</a>';

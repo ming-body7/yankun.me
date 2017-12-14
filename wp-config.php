@@ -20,10 +20,10 @@
 /** MySQL database username */
 define('DB_NAME','wordpress');
 /** MySQL database password */
-define('DB_USER','root');
-define('DB_PASSWORD','19911216');
+define('DB_USER','gmbody7');
+define('DB_PASSWORD','Xm19911216');
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'yankunaws.c9bjvwczsicy.us-west-2.rds.amazonaws.com:3306');
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -80,4 +80,6 @@ define('DB_NAME', 'wordpress');
 define('DB_USER', 'wordpress');
 define('DB_PASSWORD', 'zksJ0yQCK8');
 define('WP_ALLOW_REPAIR', true);
+
+
 require_once(ABSPATH . 'wp-settings.php');

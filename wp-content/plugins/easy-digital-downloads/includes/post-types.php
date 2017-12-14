@@ -269,7 +269,6 @@ add_action( 'init', 'edd_setup_download_taxonomies', 0 );
  * @return array            Associative array of labels (name = plural)
  */
 function edd_get_taxonomy_labels( $taxonomy = 'download_category' ) {
-
 	$allowed_taxonomies = apply_filters( 'edd_allowed_download_taxonomies', array( 'download_category', 'download_tag' ) );
 
 	if ( ! in_array( $taxonomy, $allowed_taxonomies ) ) {
@@ -280,17 +279,18 @@ function edd_get_taxonomy_labels( $taxonomy = 'download_category' ) {
 	$taxonomy = get_taxonomy( $taxonomy );
 
 	if ( false !== $taxonomy ) {
-		$singular = $taxonomy->labels->singular_name;
-		$name     = $taxonomy->labels->name;
+		$singular  = $taxonomy->labels->singular_name;
+		$name      = $taxonomy->labels->name;
+		$menu_name = $taxonomy->labels->menu_name;
 
 		$labels = array(
 			'name'          => $name,
 			'singular_name' => $singular,
+			'menu_name'     => $menu_name,
 		);
 	}
 
 	return apply_filters( 'edd_get_taxonomy_labels', $labels, $taxonomy );
-
 }
 
 /**
@@ -406,3 +406,20 @@ function edd_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	return $bulk_messages;
 }
 add_filter( 'bulk_post_updated_messages', 'edd_bulk_updated_messages', 10, 2 );
+
+/**
+ * Add row actions for the downloads custom post type
+ *
+ * @since 2.5
+ * @param  array $actions
+ * @param  WP_Post $post
+ * @return array
+ */
+function  edd_download_row_actions( $actions, $post ) {
+	if ( 'download' === $post->post_type ) {
+		return array_merge( array( 'id' => 'ID: ' . $post->ID ), $actions );
+	}
+
+	return $actions;
+}
+add_filter( 'post_row_actions', 'edd_download_row_actions', 2, 100 );

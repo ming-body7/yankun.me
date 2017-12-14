@@ -72,8 +72,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 							'name'        => 'products[]',
 							'id'          => 'products',
 							'multiple'    => true,
-                            'chosen'      => true,
-                            'placeholder' => sprintf( __( 'Select one or more %s', 'easy-digital-downloads' ), edd_get_label_plural() )
+							'chosen'      => true,
+							'placeholder' => sprintf( __( 'Select one or more %s', 'easy-digital-downloads' ), edd_get_label_plural() ),
 						) ); ?><br/>
 					</p>
 					<div id="edd-discount-product-conditions" style="display:none;">
@@ -94,7 +94,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 							</label>
 						</p>
 					</div>
-					<p class="description"><?php printf( __( 'Select %s relevant to this discount.', 'easy-digital-downloads' ), edd_get_label_plural() ); ?></p>
+					<p class="description"><?php printf( __( 'Select %s relevant to this discount. If left blank, this discount can be used on any product.', 'easy-digital-downloads' ), edd_get_label_plural() ); ?></p>
 				</td>
 			</tr>
 			<?php do_action( 'edd_add_discount_form_before_excluded_products' ); ?>
@@ -104,12 +104,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 				</th>
 				<td>
 					<?php echo EDD()->html->product_dropdown( array(
-						'name'     => 'excluded-products[]',
-						'id'       => 'excluded-products',
-						'selected' => array(),
-						'multiple' => true,
-                        'chosen'   => true,
-                        'placeholder' => sprintf( __( 'Select one or more %s', 'easy-digital-downloads' ), edd_get_label_plural() )
+						'name'        => 'excluded-products[]',
+						'id'          => 'excluded-products',
+						'selected'    => array(),
+						'multiple'    => true,
+						'chosen'      => true,
+						'placeholder' => sprintf( __( 'Select one or more %s', 'easy-digital-downloads' ), edd_get_label_plural() ),
 					) ); ?><br/>
 					<p class="description"><?php printf( __( '%s that this discount code cannot be applied to.', 'easy-digital-downloads' ), edd_get_label_plural() ); ?></p>
 				</td>

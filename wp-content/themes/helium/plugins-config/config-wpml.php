@@ -1,1 +1,0 @@
-<?php if( defined( 'ICL_SITEPRESS_VERSION' ) ) define( 'ICL_DONT_LOAD_LANGUAGE_SELECTOR_CSS', true );

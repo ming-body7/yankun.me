@@ -24,7 +24,8 @@ function edd_options_page() {
 
 	$settings_tabs = edd_get_settings_tabs();
 	$settings_tabs = empty($settings_tabs) ? array() : $settings_tabs;
-	$active_tab    = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $settings_tabs ) ? $_GET['tab'] : 'general';
+	$active_tab    = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
+	$active_tab    = array_key_exists( $active_tab, $settings_tabs ) ? $active_tab : 'general';
 	$sections      = edd_get_settings_tab_sections( $active_tab );
 	$key           = 'main';
 
@@ -33,7 +34,7 @@ function edd_options_page() {
 	}
 
 	$registered_sections = edd_get_settings_tab_sections( $active_tab );
-	$section             = isset( $_GET['section'] ) && ! empty( $registered_sections ) && array_key_exists( $_GET['section'], $registered_sections ) ? $_GET['section'] : $key;
+	$section             = isset( $_GET['section'] ) && ! empty( $registered_sections ) && array_key_exists( $_GET['section'], $registered_sections ) ? sanitize_text_field( $_GET['section'] ) : $key;
 
 	// Unset 'main' if it's empty and default to the first non-empty if it's the chosen section
 	$all_settings = edd_get_registered_settings();
@@ -44,13 +45,15 @@ function edd_options_page() {
 	$has_main_settings = strlen( ob_get_contents() ) > 0;
 	ob_end_clean();
 
+	$override = false;
 	if ( false === $has_main_settings ) {
 		unset( $sections['main'] );
 
 		if ( 'main' === $section ) {
 			foreach ( $sections as $section_key => $section_title ) {
 				if ( ! empty( $all_settings[ $active_tab ][ $section_key ] ) ) {
-					$section = $section_key;
+					$section  = $section_key;
+					$override = true;
 					break;
 				}
 			}
@@ -59,7 +62,7 @@ function edd_options_page() {
 
 	ob_start();
 	?>
-	<div class="wrap">
+	<div class="wrap <?php echo 'wrap-' . $active_tab; ?>">
 		<h1 class="nav-tab-wrapper">
 			<?php
 			foreach( edd_get_settings_tabs() as $tab_id => $tab_name ) {
@@ -74,7 +77,7 @@ function edd_options_page() {
 
 				$active = $active_tab == $tab_id ? ' nav-tab-active' : '';
 
-				echo '<a href="' . esc_url( $tab_url ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab' . $active . '">';
+				echo '<a href="' . esc_url( $tab_url ) . '" class="nav-tab' . $active . '">';
 					echo esc_html( $tab_name );
 				echo '</a>';
 			}
@@ -130,6 +133,10 @@ function edd_options_page() {
 					do_action( 'edd_settings_tab_bottom', $active_tab );
 				}
 
+				// If the main section was empty and we overrode the view with the next subsection, prepare the section for saving
+				if ( true === $override ) {
+					?><input type="hidden" name="edd_section_override" value="<?php echo $section; ?>" /><?php
+				}
 				?>
 				</table>
 				<?php submit_button(); ?>
